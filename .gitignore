@@ -1,0 +1,15 @@
+.codex/
+
+data/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+
+build/
+dist/
+*.spec
+
+.env
