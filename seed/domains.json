@@ -1,0 +1,23 @@
+{
+  "domains": [
+    {
+      "code": "GOV",
+      "name": "Gouvernance CTI",
+      "description": "Cadre de gouvernance et pilotage CTI.",
+      "objectives": [
+        {
+          "code": "GOV-OBJ-1",
+          "name": "Piloter la fonction CTI",
+          "description": "Definir roles, KPI et processus de decision.",
+          "practices": [
+            {
+              "code": "GOV-P1",
+              "name": "Definir une charte CTI",
+              "description": "Documenter le perimetre et les attentes."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
