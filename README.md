@@ -47,7 +47,8 @@ MVP en cours (v0.1). L'app demarre en Mode A.
 - `web/index.html` : UI monofichier (HTML/CSS/JS integres)
 - `seed/` : referentiel initial (JSON)
 - `data/` : persistance SQLite (`app.db`)
-- `docker/` : Dockerfile + compose
+- `Dockerfile` : image Docker (Mode C)
+- `docker/` : reserve pour compose / assets Docker
 - `scripts/` : scripts de run/build
 - `tests/` : tests minimaux
 
@@ -60,6 +61,19 @@ python3 -m venv .venv
 ```
 
 Ouvrir: http://127.0.0.1:9999/
+
+## Demarrer (Mode C - Docker)
+
+```bash
+docker build -t cti-cmm .
+docker run --rm -p 9999:9999 -v "$(pwd)/data:/app/data" cti-cmm
+```
+
+Ou via docker-compose:
+
+```bash
+docker compose up --build
+```
 
 ## Donnees de test
 
