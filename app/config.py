@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 
 APP_DATA_DIR_ENV = "APP_DATA_DIR"
+APP_DEFAULT_LANG_ENV = "APP_DEFAULT_LANG"
+SUPPORTED_LANGS = {"en", "fr"}
 
 
 def get_app_data_dir() -> Path:
@@ -19,3 +21,8 @@ def ensure_data_dir() -> Path:
     data_dir = get_app_data_dir()
     data_dir.mkdir(parents=True, exist_ok=True)
     return data_dir
+
+
+def get_default_language() -> str:
+    lang = os.getenv(APP_DEFAULT_LANG_ENV, "en").strip().lower()
+    return lang if lang in SUPPORTED_LANGS else "en"

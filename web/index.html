@@ -1,0 +1,1254 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CTI-CMM Mini</title>
+    <style>
+      :root {
+        --bg-0: #f4f2ec;
+        --bg-1: #efe7d8;
+        --ink-0: #1f2328;
+        --ink-1: #3d4650;
+        --accent-0: #c94f3d;
+        --accent-1: #2f6b6a;
+        --card: #ffffff;
+        --line: #d6d1c6;
+        --shadow: 0 20px 50px rgba(31, 35, 40, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Verdana", sans-serif;
+        color: var(--ink-0);
+        background: radial-gradient(circle at top left, #fdf9f1, var(--bg-0) 40%),
+          linear-gradient(120deg, var(--bg-1), #f6f0e2 55%, #f1f4ee);
+        min-height: 100vh;
+      }
+
+      header {
+        padding: 32px 24px 16px;
+      }
+
+      .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .lang-switch {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 160px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Georgia", "Palatino Linotype", serif;
+        margin: 0;
+      }
+
+      h1 {
+        font-size: clamp(28px, 4vw, 44px);
+        letter-spacing: 0.5px;
+      }
+
+      .subtitle {
+        margin-top: 8px;
+        color: var(--ink-1);
+      }
+
+      .status {
+        margin-top: 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #fff6e6;
+        color: #8c5a15;
+        font-size: 12px;
+        letter-spacing: 0.3px;
+      }
+
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #e2a23b;
+        box-shadow: 0 0 0 4px rgba(226, 162, 59, 0.15);
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        gap: 20px;
+        padding: 0 24px 32px;
+      }
+
+      section {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 18px;
+        box-shadow: var(--shadow);
+        animation: rise 0.6s ease;
+      }
+
+      section + section {
+        margin-top: 18px;
+      }
+
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 16px;
+      }
+
+      .panel-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .panel-title small {
+        color: var(--ink-1);
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        color: var(--ink-1);
+        margin-bottom: 6px;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        font-family: inherit;
+        font-size: 14px;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 70px;
+        resize: vertical;
+      }
+
+      button {
+        border: none;
+        border-radius: 10px;
+        padding: 9px 14px;
+        cursor: pointer;
+        background: var(--accent-1);
+        color: #fff;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      button.secondary {
+        background: #f1ede3;
+        color: var(--ink-0);
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(47, 107, 106, 0.18);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 8px 6px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        color: var(--ink-1);
+      }
+
+      .pill {
+        display: inline-flex;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #f4efe2;
+        font-size: 12px;
+        color: #6a5b48;
+      }
+
+      .muted {
+        color: var(--ink-1);
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .empty {
+        font-style: italic;
+        color: var(--ink-1);
+        padding: 8px 0;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(18, 21, 23, 0.45);
+        padding: 24px;
+      }
+
+      .modal.open {
+        display: flex;
+      }
+
+      .modal-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 20px;
+        width: min(760px, 96vw);
+        max-height: 90vh;
+        overflow: auto;
+        border: 1px solid var(--line);
+      }
+
+      .modal-card h3 {
+        margin-bottom: 12px;
+      }
+
+      .tagline {
+        display: inline-flex;
+        gap: 6px;
+        align-items: center;
+        padding: 4px 10px;
+        background: #f1e9d4;
+        border-radius: 999px;
+        font-size: 12px;
+        color: #7a5a2d;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 960px) {
+        main {
+          grid-template-columns: 1fr;
+        }
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-top">
+        <div>
+          <h1 data-i18n="title">CTI-CMM Risk Assessment</h1>
+          <p class="subtitle" data-i18n="subtitle">
+            Lightweight assessment cockpit for CTI maturity scoring and roadmap.
+          </p>
+        </div>
+        <div class="lang-switch">
+          <label for="langSelect" data-i18n="language_label">Language</label>
+          <select id="langSelect">
+            <option value="en" data-i18n="language_en">English</option>
+            <option value="fr" data-i18n="language_fr">Français</option>
+          </select>
+        </div>
+      </div>
+      <div class="status" id="statusBadge">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText" data-i18n="status_checking">Checking API...</span>
+      </div>
+    </header>
+
+    <main>
+      <div class="stack">
+        <section>
+          <div class="panel-title">
+            <h2 data-i18n="assessment_section">Assessment</h2>
+            <span class="tagline" id="assessmentLabel" data-i18n="assessment_none_selected"
+              >No assessment selected</span
+            >
+          </div>
+          <div class="grid-2">
+            <div>
+              <label for="assessmentSelect" data-i18n="select_assessment"
+                >Select assessment</label
+              >
+              <select id="assessmentSelect"></select>
+            </div>
+            <div class="actions">
+              <button id="refreshBtn" class="secondary" type="button" data-i18n="refresh">
+                Refresh
+              </button>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top: 12px;">
+            <div>
+              <label for="assessmentName" data-i18n="new_assessment_name"
+                >New assessment name</label
+              >
+              <input
+                id="assessmentName"
+                type="text"
+                placeholder="Q1-2026 CTI Review"
+                data-i18n-placeholder="assessment_name_placeholder"
+              />
+            </div>
+            <div>
+              <label for="assessmentDate" data-i18n="date">Date</label>
+              <input id="assessmentDate" type="date" />
+            </div>
+          </div>
+          <div style="margin-top: 12px;">
+            <label for="assessmentNotes" data-i18n="notes">Notes</label>
+            <textarea
+              id="assessmentNotes"
+              placeholder="Scope, context, objectives..."
+              data-i18n-placeholder="assessment_notes_placeholder"
+            ></textarea>
+          </div>
+          <div class="actions" style="margin-top: 12px;">
+            <button id="createAssessmentBtn" type="button" data-i18n="create_assessment">
+              Create assessment
+            </button>
+          </div>
+          <div id="assessmentMsg" class="muted" style="margin-top: 10px;"></div>
+        </section>
+
+        <section>
+          <div class="panel-title">
+            <h2 data-i18n="practices_section">Practices</h2>
+            <small data-i18n="practices_subtitle">Scores and roadmap per practice</small>
+          </div>
+          <div id="practiceTable"></div>
+        </section>
+
+        <section>
+          <div class="panel-title">
+            <h2 data-i18n="assets_section">Assets</h2>
+            <small data-i18n="assets_subtitle">Inventory and practice links</small>
+          </div>
+          <div class="grid-2">
+            <div>
+              <label for="assetName" data-i18n="asset_name">Asset name</label>
+              <input
+                id="assetName"
+                type="text"
+                placeholder="SIEM platform"
+                data-i18n-placeholder="asset_name_placeholder"
+              />
+            </div>
+            <div>
+              <label for="assetType" data-i18n="asset_type">Asset type</label>
+              <input
+                id="assetType"
+                type="text"
+                placeholder="Tooling, Data, Process..."
+                data-i18n-placeholder="asset_type_placeholder"
+              />
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top: 12px;">
+            <div>
+              <label for="assetCriticality" data-i18n="criticality">Criticality</label>
+              <input id="assetCriticality" type="number" min="0" max="5" />
+            </div>
+            <div>
+              <label for="assetTags" data-i18n="tags">Tags</label>
+              <input
+                id="assetTags"
+                type="text"
+                placeholder="tier-1, cti"
+                data-i18n-placeholder="asset_tags_placeholder"
+              />
+            </div>
+          </div>
+          <div class="actions" style="margin-top: 12px;">
+            <button id="createAssetBtn" type="button" data-i18n="add_asset">
+              Add asset
+            </button>
+          </div>
+          <div id="assetList" style="margin-top: 16px;"></div>
+          <div style="margin-top: 16px;">
+            <h3 data-i18n="link_asset_practice">Link asset to practice</h3>
+            <div class="grid-2">
+              <div>
+                <label for="assetSelect" data-i18n="asset">Asset</label>
+                <select id="assetSelect"></select>
+              </div>
+              <div>
+                <label for="practiceSelect" data-i18n="practice">Practice</label>
+                <select id="practiceSelect"></select>
+              </div>
+            </div>
+            <div class="actions" style="margin-top: 12px;">
+              <button id="linkAssetBtn" type="button" data-i18n="link">
+                Link
+              </button>
+            </div>
+            <div id="assetLinkMsg" class="muted" style="margin-top: 8px;"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="stack">
+        <section>
+          <div class="panel-title">
+            <h2 data-i18n="dashboard_section">Dashboard</h2>
+            <small data-i18n="dashboard_subtitle">Average scores per domain</small>
+          </div>
+          <div id="dashboardTable"></div>
+        </section>
+
+        <section>
+          <div class="panel-title">
+            <h2 data-i18n="backlog_section">Backlog</h2>
+            <small data-i18n="backlog_subtitle">Priority list for target improvements</small>
+          </div>
+          <div id="backlogTable"></div>
+        </section>
+      </div>
+    </main>
+
+    <div class="modal" id="scoreModal">
+      <div class="modal-card">
+        <div class="panel-title">
+          <h3 data-i18n="edit_practice_score">Edit practice score</h3>
+          <button class="secondary" type="button" id="closeModalBtn" data-i18n="close">
+            Close
+          </button>
+        </div>
+        <div id="modalPracticeInfo" class="pill" style="margin-bottom: 12px;"></div>
+        <div class="grid-2">
+          <div>
+            <label for="scoreValue" data-i18n="score">Score</label>
+            <select id="scoreValue">
+              <option value="" data-i18n="na">N/A</option>
+              <option value="0">CTI0</option>
+              <option value="1">CTI1</option>
+              <option value="2">CTI2</option>
+              <option value="3">CTI3</option>
+            </select>
+          </div>
+          <div>
+            <label for="targetScore" data-i18n="target_score">Target score</label>
+            <select id="targetScore">
+              <option value="" data-i18n="none">None</option>
+              <option value="0">CTI0</option>
+              <option value="1">CTI1</option>
+              <option value="2">CTI2</option>
+              <option value="3">CTI3</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 12px;">
+          <div>
+            <label for="impactValue" data-i18n="impact">Impact (0-5)</label>
+            <input id="impactValue" type="number" min="0" max="5" />
+          </div>
+          <div>
+            <label for="effortValue" data-i18n="effort">Effort (0-5)</label>
+            <input id="effortValue" type="number" min="0" max="5" />
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 12px;">
+          <div>
+            <label for="priorityValue" data-i18n="priority">Priority</label>
+            <input id="priorityValue" type="number" min="0" max="10" />
+          </div>
+          <div>
+            <label for="targetDate" data-i18n="target_date">Target date</label>
+            <input id="targetDate" type="date" />
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 12px;">
+          <div>
+            <label for="pocValue" data-i18n="poc">POC</label>
+            <input id="pocValue" type="text" />
+          </div>
+          <div>
+            <label for="evidenceValue" data-i18n="evidence">Evidence</label>
+            <input id="evidenceValue" type="text" />
+          </div>
+        </div>
+        <div style="margin-top: 12px;">
+          <label for="notesValue" data-i18n="notes">Notes</label>
+          <textarea id="notesValue"></textarea>
+        </div>
+        <div class="actions" style="margin-top: 12px;">
+          <button id="saveScoreBtn" type="button" data-i18n="save">Save</button>
+        </div>
+        <div id="scoreMsg" class="muted" style="margin-top: 8px;"></div>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        assessments: [],
+        domains: [],
+        assets: [],
+        backlog: [],
+        dashboard: [],
+        currentAssessmentId: null,
+        currentPractice: null,
+        language: "en",
+        apiStatus: "checking",
+      };
+
+      const el = (id) => document.getElementById(id);
+
+      const translations = {
+        en: {
+          page_title: "CTI-CMM Mini",
+          title: "CTI-CMM Risk Assessment",
+          subtitle:
+            "Lightweight assessment cockpit for CTI maturity scoring and roadmap.",
+          language_label: "Language",
+          language_en: "English",
+          language_fr: "French",
+          status_checking: "Checking API...",
+          status_connected: "API connected",
+          status_unreachable: "API not reachable",
+          assessment_section: "Assessment",
+          assessment_none_selected: "No assessment selected",
+          select_assessment: "Select assessment",
+          refresh: "Refresh",
+          new_assessment_name: "New assessment name",
+          assessment_name_placeholder: "Q1-2026 CTI Review",
+          date: "Date",
+          notes: "Notes",
+          assessment_notes_placeholder: "Scope, context, objectives...",
+          create_assessment: "Create assessment",
+          assessment_created: "Assessment created.",
+          name_required: "Name is required.",
+          assessment_not_found: "Assessment not found",
+          practices_section: "Practices",
+          practices_subtitle: "Scores and roadmap per practice",
+          assets_section: "Assets",
+          assets_subtitle: "Inventory and practice links",
+          asset_name: "Asset name",
+          asset_name_placeholder: "SIEM platform",
+          asset_type: "Asset type",
+          asset_type_placeholder: "Tooling, Data, Process...",
+          criticality: "Criticality",
+          criticality_short: "Crit.",
+          tags: "Tags",
+          asset_tags_placeholder: "tier-1, cti",
+          add_asset: "Add asset",
+          link_asset_practice: "Link asset to practice",
+          asset: "Asset",
+          practice: "Practice",
+          link: "Link",
+          dashboard_section: "Dashboard",
+          dashboard_subtitle: "Average scores per domain",
+          backlog_section: "Backlog",
+          backlog_subtitle: "Priority list for target improvements",
+          edit_practice_score: "Edit practice score",
+          close: "Close",
+          score: "Score",
+          target_score: "Target score",
+          impact: "Impact (0-5)",
+          effort: "Effort (0-5)",
+          priority: "Priority",
+          target_date: "Target date",
+          poc: "POC",
+          evidence: "Evidence",
+          save: "Save",
+          na: "N/A",
+          none: "None",
+          domain: "Domain",
+          objective: "Objective",
+          practice_header: "Practice",
+          target: "Target",
+          avg_score: "Avg score",
+          completion: "Completion",
+          impact_effort: "Impact/Effort",
+          name: "Name",
+          type: "Type",
+          edit: "Edit",
+          no_assessments: "No assessments yet",
+          no_domains: "No domains loaded.",
+          no_practices: "No practices found.",
+          select_assessment_first: "Select an assessment first.",
+          no_dashboard: "No dashboard data.",
+          no_backlog: "No backlog items.",
+          no_assets: "No assets registered.",
+          no_practices_loaded: "No practices loaded",
+          select_asset_practice: "Select both asset and practice.",
+          link_created: "Link created.",
+          link_exists: "Link already exists.",
+          select_assessment_practice: "Select an assessment and practice.",
+          saved: "Saved.",
+          error_prefix: "Error:",
+        },
+        fr: {
+          page_title: "CTI-CMM Mini",
+          title: "Évaluation CTI-CMM",
+          subtitle:
+            "Cockpit léger pour le scoring de maturité CTI et la roadmap.",
+          language_label: "Langue",
+          language_en: "Anglais",
+          language_fr: "Français",
+          status_checking: "Vérification de l'API...",
+          status_connected: "API connectée",
+          status_unreachable: "API inaccessible",
+          assessment_section: "Évaluation",
+          assessment_none_selected: "Aucune évaluation sélectionnée",
+          select_assessment: "Choisir une évaluation",
+          refresh: "Rafraîchir",
+          new_assessment_name: "Nom de la nouvelle évaluation",
+          assessment_name_placeholder: "Revue CTI T1-2026",
+          date: "Date",
+          notes: "Notes",
+          assessment_notes_placeholder: "Périmètre, contexte, objectifs...",
+          create_assessment: "Créer l'évaluation",
+          assessment_created: "Évaluation créée.",
+          name_required: "Le nom est requis.",
+          assessment_not_found: "Évaluation introuvable",
+          practices_section: "Pratiques",
+          practices_subtitle: "Scores et feuille de route par pratique",
+          assets_section: "Actifs",
+          assets_subtitle: "Inventaire et liens avec les pratiques",
+          asset_name: "Nom de l'actif",
+          asset_name_placeholder: "Plateforme SIEM",
+          asset_type: "Type d'actif",
+          asset_type_placeholder: "Outil, Données, Processus...",
+          criticality: "Criticité",
+          criticality_short: "Crit.",
+          tags: "Tags",
+          asset_tags_placeholder: "niveau-1, cti",
+          add_asset: "Ajouter un actif",
+          link_asset_practice: "Lier un actif à une pratique",
+          asset: "Actif",
+          practice: "Pratique",
+          link: "Lier",
+          dashboard_section: "Tableau de bord",
+          dashboard_subtitle: "Moyennes par domaine",
+          backlog_section: "Backlog",
+          backlog_subtitle: "Liste priorisée des améliorations cibles",
+          edit_practice_score: "Modifier le score de pratique",
+          close: "Fermer",
+          score: "Score",
+          target_score: "Score cible",
+          impact: "Impact (0-5)",
+          effort: "Effort (0-5)",
+          priority: "Priorité",
+          target_date: "Date cible",
+          poc: "POC",
+          evidence: "Preuve",
+          save: "Enregistrer",
+          na: "N/A",
+          none: "Aucun",
+          domain: "Domaine",
+          objective: "Objectif",
+          practice_header: "Pratique",
+          target: "Cible",
+          avg_score: "Score moyen",
+          completion: "Avancement",
+          impact_effort: "Impact/Effort",
+          name: "Nom",
+          type: "Type",
+          edit: "Modifier",
+          no_assessments: "Aucune évaluation",
+          no_domains: "Aucun domaine chargé.",
+          no_practices: "Aucune pratique trouvée.",
+          select_assessment_first: "Sélectionnez une évaluation.",
+          no_dashboard: "Aucune donnée de dashboard.",
+          no_backlog: "Aucun élément de backlog.",
+          no_assets: "Aucun actif enregistré.",
+          no_practices_loaded: "Aucune pratique chargée",
+          select_asset_practice: "Sélectionnez un actif et une pratique.",
+          link_created: "Lien créé.",
+          link_exists: "Lien déjà existant.",
+          select_assessment_practice: "Sélectionnez une évaluation et une pratique.",
+          saved: "Enregistré.",
+          error_prefix: "Erreur :",
+        },
+      };
+
+      const t = (key, vars = {}) => {
+        const lang = state.language || "en";
+        const catalog = translations[lang] || translations.en;
+        let text = catalog[key] || translations.en[key] || key;
+        Object.keys(vars).forEach((varKey) => {
+          text = text.replace(`{${varKey}}`, vars[varKey]);
+        });
+        return text;
+      };
+
+      const applyI18n = () => {
+        document.querySelectorAll("[data-i18n]").forEach((node) => {
+          node.textContent = t(node.dataset.i18n);
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
+          node.setAttribute("placeholder", t(node.dataset.i18nPlaceholder));
+        });
+        document.title = t("page_title");
+        document.documentElement.lang = state.language;
+        if (el("langSelect")) {
+          el("langSelect").value = state.language;
+        }
+        setStatus(state.apiStatus || "checking");
+      };
+
+      const api = {
+        async get(path) {
+          const res = await fetch(path);
+          if (!res.ok) {
+            throw new Error(await res.text());
+          }
+          return res.json();
+        },
+        async post(path, payload) {
+          const res = await fetch(path, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!res.ok) {
+            throw new Error(await res.text());
+          }
+          return res.json();
+        },
+      };
+
+      const toIntOrNull = (value) => {
+        if (value === "" || value === null || value === undefined) {
+          return null;
+        }
+        const parsed = Number(value);
+        return Number.isNaN(parsed) ? null : parsed;
+      };
+
+      const setStatus = (statusKey) => {
+        state.apiStatus = statusKey;
+        const styles = {
+          ok: { dot: "#2f6b6a", badge: "#eaf5f2", color: "#2f6b6a" },
+          down: { dot: "#c94f3d", badge: "#fdecea", color: "#9b3b2f" },
+          checking: { dot: "#e2a23b", badge: "#fff6e6", color: "#8c5a15" },
+        };
+        const active = styles[statusKey] || styles.checking;
+        const textKey =
+          statusKey === "ok"
+            ? "status_connected"
+            : statusKey === "down"
+            ? "status_unreachable"
+            : "status_checking";
+        el("statusText").textContent = t(textKey);
+        el("statusDot").style.background = active.dot;
+        el("statusBadge").style.background = active.badge;
+        el("statusBadge").style.color = active.color;
+      };
+
+      const detectLanguage = (serverLang) => {
+        const stored = localStorage.getItem("lang");
+        if (stored && translations[stored]) {
+          return stored;
+        }
+        if (serverLang && translations[serverLang]) {
+          return serverLang;
+        }
+        const browser = (navigator.language || "en").toLowerCase();
+        return browser.startsWith("fr") ? "fr" : "en";
+      };
+
+      const setLanguage = (lang) => {
+        state.language = translations[lang] ? lang : "en";
+        localStorage.setItem("lang", state.language);
+        applyI18n();
+        updateAssessmentLabel();
+        renderAssessmentSelect();
+        renderDomains();
+        renderDashboard();
+        renderBacklog();
+        renderAssets();
+        renderPracticeSelect();
+      };
+
+      const flattenPractices = (domains) => {
+        const list = [];
+        domains.forEach((domain) => {
+          domain.objectives.forEach((objective) => {
+            objective.practices.forEach((practice) => {
+              list.push({
+                domain,
+                objective,
+                practice,
+              });
+            });
+          });
+        });
+        return list;
+      };
+
+      const renderAssessmentSelect = () => {
+        const select = el("assessmentSelect");
+        select.innerHTML = "";
+        if (state.assessments.length === 0) {
+          const opt = document.createElement("option");
+          opt.value = "";
+          opt.textContent = t("no_assessments");
+          select.appendChild(opt);
+          select.disabled = true;
+          return;
+        }
+        select.disabled = false;
+        state.assessments.forEach((assessment) => {
+          const opt = document.createElement("option");
+          opt.value = assessment.id;
+          opt.textContent = `${assessment.name} (${assessment.assessment_date})`;
+          if (assessment.id === state.currentAssessmentId) {
+            opt.selected = true;
+          }
+          select.appendChild(opt);
+        });
+      };
+
+      const renderDomains = () => {
+        const container = el("practiceTable");
+        if (state.domains.length === 0) {
+          container.innerHTML = `<div class='empty'>${t("no_domains")}</div>`;
+          return;
+        }
+        const rows = flattenPractices(state.domains);
+        if (rows.length === 0) {
+          container.innerHTML = `<div class='empty'>${t("no_practices")}</div>`;
+          return;
+        }
+        let html =
+          "<table><thead><tr>" +
+          `<th>${t("domain")}</th><th>${t("objective")}</th><th>${t("practice_header")}</th>` +
+          `<th>${t("score")}</th><th>${t("target")}</th><th>${t("priority")}</th><th></th>` +
+          "</tr></thead><tbody>";
+        rows.forEach(({ domain, objective, practice }) => {
+          const scoreLabel =
+            practice.score === null || practice.score === undefined
+              ? t("na")
+              : `CTI${practice.score}`;
+          const targetLabel =
+            practice.target_score === null || practice.target_score === undefined
+              ? "--"
+              : `CTI${practice.target_score}`;
+          const priorityLabel =
+            practice.priority === null || practice.priority === undefined ? "--" : practice.priority;
+          html +=
+            "<tr>" +
+            `<td><strong>${domain.code}</strong><br><span class='muted'>${domain.name}</span></td>` +
+            `<td><strong>${objective.code}</strong><br><span class='muted'>${objective.name}</span></td>` +
+            `<td><strong>${practice.code}</strong><br><span class='muted'>${practice.name}</span></td>` +
+            `<td>${scoreLabel}</td>` +
+            `<td>${targetLabel}</td>` +
+            `<td>${priorityLabel}</td>` +
+            `<td><button class='secondary' data-practice='${practice.id}'>${t("edit")}</button></td>` +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        container.innerHTML = html;
+
+        container.querySelectorAll("button[data-practice]").forEach((btn) => {
+          btn.addEventListener("click", () => openScoreModal(Number(btn.dataset.practice)));
+        });
+      };
+
+      const renderDashboard = () => {
+        const container = el("dashboardTable");
+        if (!state.currentAssessmentId) {
+          container.innerHTML = `<div class='empty'>${t("select_assessment_first")}</div>`;
+          return;
+        }
+        if (state.dashboard.length === 0) {
+          container.innerHTML = `<div class='empty'>${t("no_dashboard")}</div>`;
+          return;
+        }
+        let html =
+          "<table><thead><tr>" +
+          `<th>${t("domain")}</th><th>${t("avg_score")}</th><th>${t("completion")}</th>` +
+          "</tr></thead><tbody>";
+        state.dashboard.forEach((row) => {
+          const avg = row.average_score === null || row.average_score === undefined ? "--" : row.average_score.toFixed(2);
+          html +=
+            "<tr>" +
+            `<td><strong>${row.domain_code}</strong> - ${row.domain_name}</td>` +
+            `<td>${avg}</td>` +
+            `<td>${row.completion_pct}%</td>` +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        container.innerHTML = html;
+      };
+
+      const renderBacklog = () => {
+        const container = el("backlogTable");
+        if (!state.currentAssessmentId) {
+          container.innerHTML = `<div class='empty'>${t("select_assessment_first")}</div>`;
+          return;
+        }
+        if (state.backlog.length === 0) {
+          container.innerHTML = `<div class='empty'>${t("no_backlog")}</div>`;
+          return;
+        }
+        let html =
+          "<table><thead><tr>" +
+          `<th>${t("practice_header")}</th><th>${t("target")}</th><th>${t("priority")}</th><th>${t(
+            "impact_effort"
+          )}</th><th>${t("target_date")}</th>` +
+          "</tr></thead><tbody>";
+        state.backlog.forEach((item) => {
+          const impact = item.impact === null || item.impact === undefined ? "--" : item.impact;
+          const effort = item.effort === null || item.effort === undefined ? "--" : item.effort;
+          const priority =
+            item.priority === null || item.priority === undefined
+              ? item.computed_priority
+              : item.priority;
+          html +=
+            "<tr>" +
+            `<td><strong>${item.practice_code}</strong> ${item.practice_name}<br>` +
+            `<span class='muted'>${item.domain_code} / ${item.objective_code}</span></td>` +
+            `<td>CTI${item.target_score}</td>` +
+            `<td>${priority}</td>` +
+            `<td>${impact} / ${effort}</td>` +
+            `<td>${item.target_date || "--"}</td>` +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        container.innerHTML = html;
+      };
+
+      const renderAssets = () => {
+        const list = el("assetList");
+        const select = el("assetSelect");
+        list.innerHTML = "";
+        select.innerHTML = "";
+        if (state.assets.length === 0) {
+          list.innerHTML = `<div class='empty'>${t("no_assets")}</div>`;
+        } else {
+          let html = `<table><thead><tr><th>${t("name")}</th><th>${t(
+            "type"
+          )}</th><th>${t("criticality_short")}</th><th>${t("tags")}</th></tr></thead><tbody>`;
+          state.assets.forEach((asset) => {
+            html +=
+              "<tr>" +
+              `<td>${asset.name}</td>` +
+              `<td>${asset.asset_type || "--"}</td>` +
+              `<td>${asset.criticality ?? "--"}</td>` +
+              `<td>${asset.tags || "--"}</td>` +
+              "</tr>";
+          });
+          html += "</tbody></table>";
+          list.innerHTML = html;
+        }
+        state.assets.forEach((asset) => {
+          const opt = document.createElement("option");
+          opt.value = asset.id;
+          opt.textContent = asset.name;
+          select.appendChild(opt);
+        });
+      };
+
+      const renderPracticeSelect = () => {
+        const select = el("practiceSelect");
+        select.innerHTML = "";
+        const flattened = flattenPractices(state.domains);
+        if (flattened.length === 0) {
+          const opt = document.createElement("option");
+          opt.textContent = t("no_practices_loaded");
+          opt.value = "";
+          select.appendChild(opt);
+          select.disabled = true;
+          return;
+        }
+        select.disabled = false;
+        flattened.forEach(({ domain, practice }) => {
+          const opt = document.createElement("option");
+          opt.value = practice.id;
+          opt.textContent = `${domain.code} - ${practice.code} ${practice.name}`;
+          select.appendChild(opt);
+        });
+      };
+
+      const openScoreModal = (practiceId) => {
+        const flattened = flattenPractices(state.domains);
+        const entry = flattened.find((row) => row.practice.id === practiceId);
+        if (!entry) {
+          return;
+        }
+        state.currentPractice = entry.practice;
+        el("modalPracticeInfo").textContent = `${entry.domain.code} / ${entry.practice.code} - ${entry.practice.name}`;
+        el("scoreValue").value = entry.practice.score ?? "";
+        el("targetScore").value = entry.practice.target_score ?? "";
+        el("impactValue").value = entry.practice.impact ?? "";
+        el("effortValue").value = entry.practice.effort ?? "";
+        el("priorityValue").value = entry.practice.priority ?? "";
+        el("targetDate").value = entry.practice.target_date ?? "";
+        el("pocValue").value = entry.practice.poc ?? "";
+        el("evidenceValue").value = entry.practice.evidence ?? "";
+        el("notesValue").value = entry.practice.notes ?? "";
+        el("scoreMsg").textContent = "";
+        el("scoreModal").classList.add("open");
+      };
+
+      const closeScoreModal = () => {
+        el("scoreModal").classList.remove("open");
+      };
+
+      const loadAssessments = async () => {
+        state.assessments = await api.get("/api/assessments");
+        if (!state.currentAssessmentId && state.assessments.length > 0) {
+          state.currentAssessmentId = state.assessments[0].id;
+        }
+        renderAssessmentSelect();
+        updateAssessmentLabel();
+      };
+
+      const loadDomains = async () => {
+        const query = state.currentAssessmentId ? `?assessment_id=${state.currentAssessmentId}` : "";
+        state.domains = await api.get(`/api/domains${query}`);
+        renderDomains();
+        renderPracticeSelect();
+      };
+
+      const loadDashboard = async () => {
+        if (!state.currentAssessmentId) {
+          state.dashboard = [];
+          renderDashboard();
+          return;
+        }
+        state.dashboard = await api.get(`/api/dashboard?assessment_id=${state.currentAssessmentId}`);
+        renderDashboard();
+      };
+
+      const loadBacklog = async () => {
+        if (!state.currentAssessmentId) {
+          state.backlog = [];
+          renderBacklog();
+          return;
+        }
+        state.backlog = await api.get(`/api/backlog?assessment_id=${state.currentAssessmentId}`);
+        renderBacklog();
+      };
+
+      const loadAssets = async () => {
+        state.assets = await api.get("/api/assets");
+        renderAssets();
+      };
+
+      const refreshAll = async () => {
+        await loadAssessments();
+        await loadDomains();
+        await loadDashboard();
+        await loadBacklog();
+        await loadAssets();
+      };
+
+      const updateAssessmentLabel = () => {
+        if (!state.currentAssessmentId) {
+          el("assessmentLabel").textContent = t("assessment_none_selected");
+          return;
+        }
+        const current = state.assessments.find((a) => a.id === state.currentAssessmentId);
+        if (!current) {
+          el("assessmentLabel").textContent = t("assessment_not_found");
+          return;
+        }
+        el("assessmentLabel").textContent = `${current.name} (${current.assessment_date})`;
+      };
+
+      const bindEvents = () => {
+        el("langSelect").addEventListener("change", (event) => {
+          setLanguage(event.target.value);
+        });
+
+        el("assessmentSelect").addEventListener("change", async (event) => {
+          const id = Number(event.target.value);
+          state.currentAssessmentId = Number.isNaN(id) ? null : id;
+          updateAssessmentLabel();
+          await loadDomains();
+          await loadDashboard();
+          await loadBacklog();
+        });
+
+        el("createAssessmentBtn").addEventListener("click", async () => {
+          const name = el("assessmentName").value.trim();
+          const assessmentDate = el("assessmentDate").value;
+          const notes = el("assessmentNotes").value.trim();
+          if (!name) {
+            el("assessmentMsg").textContent = t("name_required");
+            return;
+          }
+          try {
+            const result = await api.post("/api/assessments", {
+              name,
+              assessment_date: assessmentDate || null,
+              notes: notes || null,
+            });
+            state.currentAssessmentId = result.id;
+            el("assessmentName").value = "";
+            el("assessmentDate").value = "";
+            el("assessmentNotes").value = "";
+            el("assessmentMsg").textContent = t("assessment_created");
+            await refreshAll();
+          } catch (err) {
+            el("assessmentMsg").textContent = `${t("error_prefix")} ${err.message}`;
+          }
+        });
+
+        el("refreshBtn").addEventListener("click", async () => {
+          await refreshAll();
+        });
+
+        el("createAssetBtn").addEventListener("click", async () => {
+          const name = el("assetName").value.trim();
+          if (!name) {
+            return;
+          }
+          const payload = {
+            name,
+            asset_type: el("assetType").value.trim() || null,
+            criticality: toIntOrNull(el("assetCriticality").value),
+            tags: el("assetTags").value.trim() || null,
+          };
+          try {
+            await api.post("/api/assets", payload);
+            el("assetName").value = "";
+            el("assetType").value = "";
+            el("assetCriticality").value = "";
+            el("assetTags").value = "";
+            await loadAssets();
+          } catch (err) {
+            el("assetList").innerHTML = `<div class='empty'>${t("error_prefix")} ${err.message}</div>`;
+          }
+        });
+
+        el("linkAssetBtn").addEventListener("click", async () => {
+          const assetId = Number(el("assetSelect").value);
+          const practiceId = Number(el("practiceSelect").value);
+          if (!assetId || !practiceId) {
+            el("assetLinkMsg").textContent = t("select_asset_practice");
+            return;
+          }
+          try {
+            const result = await api.post("/api/asset-links", {
+              asset_id: assetId,
+              practice_id: practiceId,
+            });
+            el("assetLinkMsg").textContent = result.created
+              ? t("link_created")
+              : t("link_exists");
+          } catch (err) {
+            el("assetLinkMsg").textContent = `${t("error_prefix")} ${err.message}`;
+          }
+        });
+
+        el("saveScoreBtn").addEventListener("click", async () => {
+          if (!state.currentAssessmentId || !state.currentPractice) {
+            el("scoreMsg").textContent = t("select_assessment_practice");
+            return;
+          }
+          const payload = {
+            assessment_id: state.currentAssessmentId,
+            practice_id: state.currentPractice.id,
+            score: toIntOrNull(el("scoreValue").value),
+            target_score: toIntOrNull(el("targetScore").value),
+            impact: toIntOrNull(el("impactValue").value),
+            effort: toIntOrNull(el("effortValue").value),
+            priority: toIntOrNull(el("priorityValue").value),
+            target_date: el("targetDate").value || null,
+            poc: el("pocValue").value.trim() || null,
+            evidence: el("evidenceValue").value.trim() || null,
+            notes: el("notesValue").value.trim() || null,
+          };
+          try {
+            await api.post("/api/scores", payload);
+            el("scoreMsg").textContent = t("saved");
+            await loadDomains();
+            await loadDashboard();
+            await loadBacklog();
+          } catch (err) {
+            el("scoreMsg").textContent = `${t("error_prefix")} ${err.message}`;
+          }
+        });
+
+        el("closeModalBtn").addEventListener("click", closeScoreModal);
+        el("scoreModal").addEventListener("click", (event) => {
+          if (event.target.id === "scoreModal") {
+            closeScoreModal();
+          }
+        });
+      };
+
+      const init = async () => {
+        let serverLang = null;
+        try {
+          const config = await api.get("/api/config");
+          serverLang = config.default_language;
+        } catch (err) {
+          serverLang = null;
+        }
+        setLanguage(detectLanguage(serverLang));
+        try {
+          await api.get("/api/healthz");
+          setStatus("ok");
+        } catch (err) {
+          setStatus("down");
+        }
+        try {
+          await refreshAll();
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      bindEvents();
+      init();
+    </script>
+  </body>
+</html>
