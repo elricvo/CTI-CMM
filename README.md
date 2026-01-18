@@ -129,4 +129,4 @@ AGPLv3 (voir `LICENSE`) et notice legale dans `docs/legal-notice.md`.
 
 ## Roadmap courte
 
-Voir `.codex/TODO.md` pour l'ordre recommande.
+Roadmap a definir.
