@@ -21,6 +21,7 @@ from app.seed import seed_db
 from app import services
 
 WEB_INDEX_PATH = Path(__file__).resolve().parents[1] / "web" / "index.html"
+LEGAL_NOTICE_PATH = Path(__file__).resolve().parents[1] / "docs" / "legal-notice.md"
 
 
 class AssessmentCreate(BaseModel):
@@ -67,6 +68,15 @@ def healthz():
     return {"status": "ok"}
 
 
+def legal_notice():
+    if LEGAL_NOTICE_PATH.exists():
+        return FileResponse(LEGAL_NOTICE_PATH, media_type="text/markdown")
+    return HTMLResponse(
+        "<h1>Legal notice not found.</h1>",
+        status_code=404,
+    )
+
+
 def config_payload():
     return {"default_language": get_default_language()}
 
@@ -98,6 +108,7 @@ def create_app() -> FastAPI:
             pass
 
     app.get("/")(index)
+    app.get("/legal-notice")(legal_notice)
     app.get("/api/healthz")(healthz)
     app.get("/api/config")(config_payload)
 

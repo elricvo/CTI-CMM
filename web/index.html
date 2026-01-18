@@ -255,6 +255,21 @@
         font-size: 12px;
       }
 
+      footer a {
+        color: var(--accent-1);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      .footer-sep {
+        margin: 0 6px;
+        color: var(--line);
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
@@ -693,6 +708,8 @@
 
     <footer>
       <span data-i18n="created_by">created by eric vanoverbeke</span>
+      <span class="footer-sep">·</span>
+      <a href="/legal-notice" data-i18n="legal_notice_link">AGPLv3 - legal notice</a>
     </footer>
 
     <div class="modal" id="scoreModal">
@@ -812,6 +829,7 @@
           quit: "Quit",
           quit_confirm: "Save and stop the service now?",
           created_by: "created by eric vanoverbeke",
+          legal_notice_link: "AGPLv3 - legal notice",
           active_assessment: "Active assessment",
           manage_assessments: "Manage",
           active_assessment_hint: "Switch assessment in the workspace.",
@@ -953,6 +971,7 @@
           quit: "Quitter",
           quit_confirm: "Sauvegarder et arrêter le service maintenant ?",
           created_by: "créé par eric vanoverbeke",
+          legal_notice_link: "AGPLv3 - notice legale",
           active_assessment: "Évaluation active",
           manage_assessments: "Gérer",
           active_assessment_hint: "Changer l'évaluation dans l'espace de travail.",
