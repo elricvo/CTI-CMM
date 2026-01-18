@@ -1,4 +1,6 @@
 @echo off
+REM Author: eric vanoverbeke
+REM Date: 2026-01-18
 cd /d "%~dp0.."
 set "APP_TEST_DATA="
 for %%A in (%*) do (

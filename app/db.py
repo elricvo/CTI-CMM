@@ -1,3 +1,8 @@
+"""
+Author: eric vanoverbeke
+Date: 2026-01-18
+"""
+
 import sqlite3
 from pathlib import Path
 from typing import Iterable, Tuple, Union

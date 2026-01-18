@@ -1,5 +1,8 @@
 # CTI-CMM Mini App
 
+Auteur : eric vanoverbeke
+Date : 2026-01-18
+
 Mini web-app Python + SQLite pour evaluer la maturite CTI/Risk.
 
 ## CTI-CMM en bref
@@ -74,6 +77,10 @@ Selecteur de langue dans l'UI (EN/FR). Le defaut serveur se regle via
 ## Documentation utilisateur
 
 Voir `docs/user-guide.md`.
+
+## Licence
+
+AGPLv3 (voir `LICENSE`) et notice legale dans `docs/legal-notice.md`.
 
 ## Roadmap courte
 

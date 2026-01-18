@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- Author: eric vanoverbeke | Date: 2026-01-18 -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -113,10 +114,13 @@
       }
 
       main {
+        padding: 0 24px 32px;
+      }
+
+      .layout {
         display: grid;
         grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
         gap: 20px;
-        padding: 0 24px 32px;
       }
 
       section {
@@ -220,11 +224,11 @@
         transform: none;
       }
 
-      body[data-view="dashboard"] [data-view="workspace"] {
+      body[data-view="dashboard"] .layout[data-view="workspace"] {
         display: none;
       }
 
-      body[data-view="workspace"] [data-view="dashboard"] {
+      body[data-view="workspace"] .layout[data-view="dashboard"] {
         display: none;
       }
 
@@ -242,6 +246,13 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 12px;
+      }
+
+      footer {
+        padding: 12px 24px 32px;
+        text-align: center;
+        color: var(--ink-1);
+        font-size: 12px;
       }
 
       table {
@@ -349,7 +360,7 @@
       }
 
       @media (max-width: 960px) {
-        main {
+        .layout {
           grid-template-columns: 1fr;
         }
         .grid-2 {
@@ -393,277 +404,296 @@
     </header>
 
     <main>
-      <div class="stack">
-        <section data-view="dashboard">
-          <div class="panel-title">
-            <h2 data-i18n="active_assessment">Active assessment</h2>
-            <button
-              class="secondary"
-              id="gotoWorkspaceBtn"
-              type="button"
-              data-i18n="manage_assessments"
-            >
-              Manage
-            </button>
-          </div>
-          <div class="tagline" id="dashboardAssessmentLabel" data-i18n="assessment_none_selected">
-            No assessment selected
-          </div>
-          <div class="muted" style="margin-top: 8px;" data-i18n="active_assessment_hint">
-            Switch assessment in the workspace.
-          </div>
-        </section>
-        <section data-view="dashboard">
-          <div class="panel-title">
-            <h2 data-i18n="domain_chart_title">Maturity by domain</h2>
-            <small data-i18n="domain_chart_subtitle">Average score per domain</small>
-          </div>
-          <div class="chart" id="domainChart"></div>
-        </section>
-        <section data-view="dashboard">
-          <div class="panel-title">
-            <h2 data-i18n="backlog_scatter_title">Backlog impact vs effort</h2>
-            <small data-i18n="backlog_scatter_subtitle">Prioritization map</small>
-          </div>
-          <div class="chart" id="backlogScatter"></div>
-        </section>
-        <section data-view="workspace">
-          <div class="panel-title">
-            <h2 data-i18n="assessment_section">Assessment</h2>
-            <span class="tagline" id="assessmentLabel" data-i18n="assessment_none_selected"
-              >No assessment selected</span
-            >
-          </div>
-          <div class="grid-2">
-            <div>
-              <label for="assessmentSelect" data-i18n="select_assessment"
-                >Select assessment</label
+      <div class="layout" data-view="dashboard">
+        <div class="stack">
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="active_assessment">Active assessment</h2>
+              <button
+                class="secondary"
+                id="gotoWorkspaceBtn"
+                type="button"
+                data-i18n="manage_assessments"
               >
-              <select id="assessmentSelect"></select>
-            </div>
-            <div class="actions">
-              <button id="refreshBtn" class="secondary" type="button" data-i18n="refresh">
-                Refresh
+                Manage
               </button>
             </div>
-          </div>
-          <div class="grid-2" style="margin-top: 12px;">
-            <div>
-              <label for="assessmentName" data-i18n="new_assessment_name"
-                >New assessment name</label
+            <div
+              class="tagline"
+              id="dashboardAssessmentLabel"
+              data-i18n="assessment_none_selected"
+            >
+              No assessment selected
+            </div>
+            <div class="muted" style="margin-top: 8px;" data-i18n="active_assessment_hint">
+              Switch assessment in the workspace.
+            </div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="dashboard_section">Dashboard</h2>
+              <small data-i18n="dashboard_subtitle">Average scores per domain</small>
+            </div>
+            <div id="dashboardTable"></div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="evolution_section">Evolution</h2>
+              <small data-i18n="evolution_subtitle">Trends and changes over time</small>
+            </div>
+            <div class="subsection">
+              <h3 data-i18n="trend_section">Assessment trends</h3>
+              <div id="trendTable"></div>
+            </div>
+            <div class="subsection">
+              <h3 data-i18n="history_section">Change history</h3>
+              <div id="evolutionTable"></div>
+            </div>
+            <div class="subsection">
+              <h3 data-i18n="recent_section">Recent changes</h3>
+              <div id="recentTable"></div>
+            </div>
+          </section>
+        </div>
+
+        <div class="stack">
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="domain_chart_title">Maturity by domain</h2>
+              <small data-i18n="domain_chart_subtitle">Average score per domain</small>
+            </div>
+            <div class="chart" id="domainChart"></div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="backlog_scatter_title">Backlog impact vs effort</h2>
+              <small data-i18n="backlog_scatter_subtitle">Prioritization map</small>
+            </div>
+            <div class="chart" id="backlogScatter"></div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="trend_chart_title">Maturity evolution</h2>
+              <small data-i18n="trend_chart_subtitle">Average score by assessment</small>
+            </div>
+            <div class="chart" id="trendChart"></div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="activity_chart_title">Activity volume</h2>
+              <small data-i18n="activity_chart_subtitle">Daily changes (30 days)</small>
+            </div>
+            <div class="chart" id="activityChart"></div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="asset_coverage_title">Asset coverage</h2>
+              <small data-i18n="asset_coverage_subtitle">Linked practices per asset</small>
+            </div>
+            <div class="chart" id="assetCoverageChart"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="layout" data-view="workspace">
+        <div class="stack">
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="assessment_section">Assessment</h2>
+              <span class="tagline" id="assessmentLabel" data-i18n="assessment_none_selected"
+                >No assessment selected</span
               >
-              <input
-                id="assessmentName"
-                type="text"
-                placeholder="Q1-2026 CTI Review"
-                data-i18n-placeholder="assessment_name_placeholder"
-              />
             </div>
-            <div>
-              <label for="assessmentDate" data-i18n="date">Date</label>
-              <input id="assessmentDate" type="date" />
-            </div>
-          </div>
-          <div style="margin-top: 12px;">
-            <label for="assessmentNotes" data-i18n="notes">Notes</label>
-            <textarea
-              id="assessmentNotes"
-              placeholder="Scope, context, objectives..."
-              data-i18n-placeholder="assessment_notes_placeholder"
-            ></textarea>
-          </div>
-          <div class="actions" style="margin-top: 12px;">
-            <button id="createAssessmentBtn" type="button" data-i18n="create_assessment">
-              Create assessment
-            </button>
-          </div>
-          <div id="assessmentMsg" class="muted" style="margin-top: 10px;"></div>
-        </section>
-
-        <section data-view="workspace">
-          <div class="panel-title">
-            <h2 data-i18n="filters_section">Filters</h2>
-            <button id="filtersResetBtn" class="secondary" type="button" data-i18n="filters_reset">
-              Reset
-            </button>
-          </div>
-          <div class="filters">
-            <div>
-              <label for="filterDomain" data-i18n="filter_domain">Domain</label>
-              <select id="filterDomain"></select>
-            </div>
-            <div>
-              <label for="filterScore" data-i18n="filter_score">Score</label>
-              <select id="filterScore">
-                <option value="all" data-i18n="filter_all">All</option>
-                <option value="na" data-i18n="filter_na">N/A</option>
-                <option value="0">CTI0</option>
-                <option value="1">CTI1</option>
-                <option value="2">CTI2</option>
-                <option value="3">CTI3</option>
-              </select>
-            </div>
-            <div>
-              <label for="filterSearch" data-i18n="filter_search">Search</label>
-              <input
-                id="filterSearch"
-                type="text"
-                data-i18n-placeholder="filter_search_placeholder"
-                placeholder="Practice name or code"
-              />
-            </div>
-            <div>
-              <label for="filterMinPriority" data-i18n="filter_min_priority">
-                Min priority
-              </label>
-              <input id="filterMinPriority" type="number" min="0" max="10" />
-            </div>
-            <div>
-              <label for="filterMaxEffort" data-i18n="filter_max_effort">
-                Max effort
-              </label>
-              <input id="filterMaxEffort" type="number" min="0" max="10" />
-            </div>
-          </div>
-        </section>
-
-        <section data-view="workspace">
-          <div class="panel-title">
-            <h2 data-i18n="practices_section">Practices</h2>
-            <small data-i18n="practices_subtitle">Scores and roadmap per practice</small>
-          </div>
-          <div id="practiceTable"></div>
-        </section>
-
-        <section data-view="workspace">
-          <div class="panel-title">
-            <h2 data-i18n="assets_section">Assets</h2>
-            <small data-i18n="assets_subtitle">Inventory and practice links</small>
-          </div>
-          <div class="grid-2">
-            <div>
-              <label for="assetName" data-i18n="asset_name">Asset name</label>
-              <input
-                id="assetName"
-                type="text"
-                placeholder="SIEM platform"
-                data-i18n-placeholder="asset_name_placeholder"
-              />
-            </div>
-            <div>
-              <label for="assetType" data-i18n="asset_type">Asset type</label>
-              <input
-                id="assetType"
-                type="text"
-                placeholder="Tooling, Data, Process..."
-                data-i18n-placeholder="asset_type_placeholder"
-              />
-            </div>
-          </div>
-          <div class="grid-2" style="margin-top: 12px;">
-            <div>
-              <label for="assetCriticality" data-i18n="criticality">Criticality</label>
-              <input id="assetCriticality" type="number" min="0" max="5" />
-            </div>
-            <div>
-              <label for="assetTags" data-i18n="tags">Tags</label>
-              <input
-                id="assetTags"
-                type="text"
-                placeholder="tier-1, cti"
-                data-i18n-placeholder="asset_tags_placeholder"
-              />
-            </div>
-          </div>
-          <div class="actions" style="margin-top: 12px;">
-            <button id="createAssetBtn" type="button" data-i18n="add_asset">
-              Add asset
-            </button>
-          </div>
-          <div id="assetList" style="margin-top: 16px;"></div>
-          <div style="margin-top: 16px;">
-            <h3 data-i18n="link_asset_practice">Link asset to practice</h3>
             <div class="grid-2">
               <div>
-                <label for="assetSelect" data-i18n="asset">Asset</label>
-                <select id="assetSelect"></select>
+                <label for="assessmentSelect" data-i18n="select_assessment"
+                  >Select assessment</label
+                >
+                <select id="assessmentSelect"></select>
+              </div>
+              <div class="actions">
+                <button id="refreshBtn" class="secondary" type="button" data-i18n="refresh">
+                  Refresh
+                </button>
+              </div>
+            </div>
+            <div class="grid-2" style="margin-top: 12px;">
+              <div>
+                <label for="assessmentName" data-i18n="new_assessment_name"
+                  >New assessment name</label
+                >
+                <input
+                  id="assessmentName"
+                  type="text"
+                  placeholder="Q1-2026 CTI Review"
+                  data-i18n-placeholder="assessment_name_placeholder"
+                />
               </div>
               <div>
-                <label for="practiceSelect" data-i18n="practice">Practice</label>
-                <select id="practiceSelect"></select>
+                <label for="assessmentDate" data-i18n="date">Date</label>
+                <input id="assessmentDate" type="date" />
+              </div>
+            </div>
+            <div style="margin-top: 12px;">
+              <label for="assessmentNotes" data-i18n="notes">Notes</label>
+              <textarea
+                id="assessmentNotes"
+                placeholder="Scope, context, objectives..."
+                data-i18n-placeholder="assessment_notes_placeholder"
+              ></textarea>
+            </div>
+            <div class="actions" style="margin-top: 12px;">
+              <button id="createAssessmentBtn" type="button" data-i18n="create_assessment">
+                Create assessment
+              </button>
+            </div>
+            <div id="assessmentMsg" class="muted" style="margin-top: 10px;"></div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="filters_section">Filters</h2>
+              <button id="filtersResetBtn" class="secondary" type="button" data-i18n="filters_reset">
+                Reset
+              </button>
+            </div>
+            <div class="filters">
+              <div>
+                <label for="filterDomain" data-i18n="filter_domain">Domain</label>
+                <select id="filterDomain"></select>
+              </div>
+              <div>
+                <label for="filterScore" data-i18n="filter_score">Score</label>
+                <select id="filterScore">
+                  <option value="all" data-i18n="filter_all">All</option>
+                  <option value="na" data-i18n="filter_na">N/A</option>
+                  <option value="0">CTI0</option>
+                  <option value="1">CTI1</option>
+                  <option value="2">CTI2</option>
+                  <option value="3">CTI3</option>
+                </select>
+              </div>
+              <div>
+                <label for="filterSearch" data-i18n="filter_search">Search</label>
+                <input
+                  id="filterSearch"
+                  type="text"
+                  data-i18n-placeholder="filter_search_placeholder"
+                  placeholder="Practice name or code"
+                />
+              </div>
+              <div>
+                <label for="filterMinPriority" data-i18n="filter_min_priority">
+                  Min priority
+                </label>
+                <input id="filterMinPriority" type="number" min="0" max="10" />
+              </div>
+              <div>
+                <label for="filterMaxEffort" data-i18n="filter_max_effort">
+                  Max effort
+                </label>
+                <input id="filterMaxEffort" type="number" min="0" max="10" />
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="backlog_section">Backlog</h2>
+              <small data-i18n="backlog_subtitle">Priority list for target improvements</small>
+            </div>
+            <div id="backlogTable"></div>
+          </section>
+        </div>
+
+        <div class="stack">
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="practices_section">Practices</h2>
+              <small data-i18n="practices_subtitle">Scores and roadmap per practice</small>
+            </div>
+            <div id="practiceTable"></div>
+          </section>
+
+          <section>
+            <div class="panel-title">
+              <h2 data-i18n="assets_section">Assets</h2>
+              <small data-i18n="assets_subtitle">Inventory and practice links</small>
+            </div>
+            <div class="grid-2">
+              <div>
+                <label for="assetName" data-i18n="asset_name">Asset name</label>
+                <input
+                  id="assetName"
+                  type="text"
+                  placeholder="SIEM platform"
+                  data-i18n-placeholder="asset_name_placeholder"
+                />
+              </div>
+              <div>
+                <label for="assetType" data-i18n="asset_type">Asset type</label>
+                <input
+                  id="assetType"
+                  type="text"
+                  placeholder="Tooling, Data, Process..."
+                  data-i18n-placeholder="asset_type_placeholder"
+                />
+              </div>
+            </div>
+            <div class="grid-2" style="margin-top: 12px;">
+              <div>
+                <label for="assetCriticality" data-i18n="criticality">Criticality</label>
+                <input id="assetCriticality" type="number" min="0" max="5" />
+              </div>
+              <div>
+                <label for="assetTags" data-i18n="tags">Tags</label>
+                <input
+                  id="assetTags"
+                  type="text"
+                  placeholder="tier-1, cti"
+                  data-i18n-placeholder="asset_tags_placeholder"
+                />
               </div>
             </div>
             <div class="actions" style="margin-top: 12px;">
-              <button id="linkAssetBtn" type="button" data-i18n="link">
-                Link
+              <button id="createAssetBtn" type="button" data-i18n="add_asset">
+                Add asset
               </button>
             </div>
-            <div id="assetLinkMsg" class="muted" style="margin-top: 8px;"></div>
-          </div>
-        </section>
-      </div>
-
-      <div class="stack">
-        <section data-view="dashboard">
-          <div class="panel-title">
-            <h2 data-i18n="dashboard_section">Dashboard</h2>
-            <small data-i18n="dashboard_subtitle">Average scores per domain</small>
-          </div>
-          <div id="dashboardTable"></div>
-        </section>
-
-        <section data-view="dashboard">
-          <div class="panel-title">
-            <h2 data-i18n="trend_chart_title">Maturity evolution</h2>
-            <small data-i18n="trend_chart_subtitle">Average score by assessment</small>
-          </div>
-          <div class="chart" id="trendChart"></div>
-        </section>
-
-        <section data-view="dashboard">
-          <div class="panel-title">
-            <h2 data-i18n="activity_chart_title">Activity volume</h2>
-            <small data-i18n="activity_chart_subtitle">Daily changes (30 days)</small>
-          </div>
-          <div class="chart" id="activityChart"></div>
-        </section>
-
-        <section data-view="dashboard">
-          <div class="panel-title">
-            <h2 data-i18n="asset_coverage_title">Asset coverage</h2>
-            <small data-i18n="asset_coverage_subtitle">Linked practices per asset</small>
-          </div>
-          <div class="chart" id="assetCoverageChart"></div>
-        </section>
-
-        <section data-view="workspace">
-          <div class="panel-title">
-            <h2 data-i18n="backlog_section">Backlog</h2>
-            <small data-i18n="backlog_subtitle">Priority list for target improvements</small>
-          </div>
-          <div id="backlogTable"></div>
-        </section>
-
-        <section data-view="dashboard">
-          <div class="panel-title">
-            <h2 data-i18n="evolution_section">Evolution</h2>
-            <small data-i18n="evolution_subtitle">Trends and changes over time</small>
-          </div>
-          <div class="subsection">
-            <h3 data-i18n="trend_section">Assessment trends</h3>
-            <div id="trendTable"></div>
-          </div>
-          <div class="subsection">
-            <h3 data-i18n="history_section">Change history</h3>
-            <div id="evolutionTable"></div>
-          </div>
-          <div class="subsection">
-            <h3 data-i18n="recent_section">Recent changes</h3>
-            <div id="recentTable"></div>
-          </div>
-        </section>
+            <div id="assetList" style="margin-top: 16px;"></div>
+            <div style="margin-top: 16px;">
+              <h3 data-i18n="link_asset_practice">Link asset to practice</h3>
+              <div class="grid-2">
+                <div>
+                  <label for="assetSelect" data-i18n="asset">Asset</label>
+                  <select id="assetSelect"></select>
+                </div>
+                <div>
+                  <label for="practiceSelect" data-i18n="practice">Practice</label>
+                  <select id="practiceSelect"></select>
+                </div>
+              </div>
+              <div class="actions" style="margin-top: 12px;">
+                <button id="linkAssetBtn" type="button" data-i18n="link">
+                  Link
+                </button>
+              </div>
+              <div id="assetLinkMsg" class="muted" style="margin-top: 8px;"></div>
+            </div>
+          </section>
+        </div>
       </div>
     </main>
+
+    <footer>
+      <span data-i18n="created_by">created by eric vanoverbeke</span>
+    </footer>
 
     <div class="modal" id="scoreModal">
       <div class="modal-card">
@@ -781,6 +811,7 @@
           nav_workspace: "Workspace",
           quit: "Quit",
           quit_confirm: "Save and stop the service now?",
+          created_by: "created by eric vanoverbeke",
           active_assessment: "Active assessment",
           manage_assessments: "Manage",
           active_assessment_hint: "Switch assessment in the workspace.",
@@ -921,6 +952,7 @@
           nav_workspace: "Espace de travail",
           quit: "Quitter",
           quit_confirm: "Sauvegarder et arrêter le service maintenant ?",
+          created_by: "créé par eric vanoverbeke",
           active_assessment: "Évaluation active",
           manage_assessments: "Gérer",
           active_assessment_hint: "Changer l'évaluation dans l'espace de travail.",

@@ -1,3 +1,8 @@
+"""
+Author: eric vanoverbeke
+Date: 2026-01-18
+"""
+
 import unittest
 
 from app.main import healthz

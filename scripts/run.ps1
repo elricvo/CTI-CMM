@@ -1,3 +1,6 @@
+# Author: eric vanoverbeke
+# Date: 2026-01-18
+
 $root = Join-Path $PSScriptRoot ".."
 $useTestData = $args -contains "--test-data"
 $venvPython = Join-Path $root ".venv\\Scripts\\python.exe"

@@ -1,3 +1,8 @@
+"""
+Author: eric vanoverbeke
+Date: 2026-01-18
+"""
+
 from pathlib import Path
 import os
 import sqlite3
