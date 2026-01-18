@@ -6,6 +6,31 @@ CTI-CMM Mini is a lightweight web app for CTI/Risk maturity assessments.
 It lets you create assessments, score practices, link assets, and view
 an aggregated dashboard and backlog.
 
+## CTI-CMM basics
+
+CTI-CMM stands for:
+
+- Cyber Threat Intelligence Capability Maturity Model
+- En francais : Modèle de maturité des capacités en Cyber Threat Intelligence.
+
+Definitions:
+
+- Cyber Threat Intelligence (CTI): the discipline of collecting, analyzing, and using threat information (attackers, techniques, campaigns) to improve protection and decisions.
+- Capability: the concrete abilities of a CTI team (what it can actually do).
+- Maturity Model: a model to place your level on a scale and see how to improve.
+
+CTI-CMM is a framework that describes CTI practices and helps you assess
+CTI maturity across multiple domains (the CTI-CMM site mentions 11 domains).
+
+## CTI0 -> CTI3 scale
+
+The assessment uses a 4-level scale:
+
+- CTI0: no capability / not in place
+- CTI1: partially in place
+- CTI2: largely in place
+- CTI3: fully in place (fully operational)
+
 ## Start the app (Mode A)
 
 Linux/macOS:
@@ -103,6 +128,13 @@ The dashboard and backlog refresh automatically after saving.
 
 - **Dashboard** shows average score and completion per domain.
 - **Backlog** lists practices where target score is higher than current score.
+
+## Evolution dashboard
+
+The **Evolution** panel provides:
+
+- Assessment trends (average score and completion by assessment).
+- Change history (daily counts of created/updated items).
 
 ## Data persistence
 

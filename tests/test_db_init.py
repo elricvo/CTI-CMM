@@ -27,3 +27,4 @@ class TestDbInit(unittest.TestCase):
 
             self.assertIn("schema_version", tables)
             self.assertIn("domain", tables)
+            self.assertIn("audit_log", tables)

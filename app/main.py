@@ -154,6 +154,22 @@ def create_app() -> FastAPI:
         finally:
             conn.close()
 
+    @app.get("/api/assessment-trends")
+    def get_assessment_trends():
+        conn = connect()
+        try:
+            return services.get_assessment_trends(conn)
+        finally:
+            conn.close()
+
+    @app.get("/api/evolution")
+    def get_evolution(days: int = Query(30, ge=1, le=365)):
+        conn = connect()
+        try:
+            return services.get_evolution(conn, days)
+        finally:
+            conn.close()
+
     @app.get("/api/assets")
     def get_assets():
         conn = connect()

@@ -1,5 +1,59 @@
+import json
 from datetime import date
 from typing import Any, Dict, List, Optional
+
+
+def _serialize_audit(payload: Optional[Dict[str, Any]]) -> Optional[str]:
+    if payload is None:
+        return None
+    return json.dumps(payload, ensure_ascii=True, sort_keys=True)
+
+
+def _audit_log(
+    conn,
+    entity_type: str,
+    entity_id: int,
+    action: str,
+    old_data: Optional[Dict[str, Any]],
+    new_data: Optional[Dict[str, Any]],
+) -> None:
+    conn.execute(
+        """
+        INSERT INTO audit_log (entity_type, entity_id, action, old_data, new_data)
+        VALUES (?, ?, ?, ?, ?);
+        """,
+        (
+            entity_type,
+            entity_id,
+            action,
+            _serialize_audit(old_data),
+            _serialize_audit(new_data),
+        ),
+    )
+
+
+def _fetch_practice_score(conn, assessment_id: int, practice_id: int) -> Optional[Dict[str, Any]]:
+    row = conn.execute(
+        """
+        SELECT
+            id,
+            assessment_id,
+            practice_id,
+            score,
+            evidence,
+            poc,
+            target_score,
+            impact,
+            effort,
+            priority,
+            target_date,
+            notes
+        FROM practice_score
+        WHERE assessment_id = ? AND practice_id = ?;
+        """,
+        (assessment_id, practice_id),
+    ).fetchone()
+    return dict(row) if row else None
 
 
 def get_domains(conn, assessment_id: Optional[int] = None) -> List[Dict[str, Any]]:
@@ -117,8 +171,22 @@ def create_assessment(
         "INSERT INTO assessment (name, assessment_date, notes) VALUES (?, ?, ?);",
         (name, assessment_date, notes),
     )
+    assessment_id = int(cursor.lastrowid)
+    _audit_log(
+        conn,
+        "assessment",
+        assessment_id,
+        "create",
+        None,
+        {
+            "id": assessment_id,
+            "name": name,
+            "assessment_date": assessment_date,
+            "notes": notes,
+        },
+    )
     conn.commit()
-    return int(cursor.lastrowid)
+    return assessment_id
 
 
 def assessment_exists(conn, assessment_id: int) -> bool:
@@ -129,6 +197,9 @@ def assessment_exists(conn, assessment_id: int) -> bool:
 
 
 def upsert_practice_score(conn, payload: Dict[str, Any]) -> int:
+    old_row = _fetch_practice_score(
+        conn, payload["assessment_id"], payload["practice_id"]
+    )
     cursor = conn.execute(
         """
         INSERT INTO practice_score (
@@ -170,8 +241,14 @@ def upsert_practice_score(conn, payload: Dict[str, Any]) -> int:
             payload.get("notes"),
         ),
     )
+    new_row = _fetch_practice_score(
+        conn, payload["assessment_id"], payload["practice_id"]
+    )
+    if new_row:
+        action = "create" if old_row is None else "update"
+        _audit_log(conn, "practice_score", new_row["id"], action, old_row, new_row)
     conn.commit()
-    return int(cursor.lastrowid)
+    return int(cursor.lastrowid or (new_row["id"] if new_row else 0))
 
 
 def list_assets(conn) -> List[Dict[str, Any]]:
@@ -192,8 +269,23 @@ def create_asset(
         "INSERT INTO asset (name, asset_type, criticality, tags) VALUES (?, ?, ?, ?);",
         (name, asset_type, criticality, tags),
     )
+    asset_id = int(cursor.lastrowid)
+    _audit_log(
+        conn,
+        "asset",
+        asset_id,
+        "create",
+        None,
+        {
+            "id": asset_id,
+            "name": name,
+            "asset_type": asset_type,
+            "criticality": criticality,
+            "tags": tags,
+        },
+    )
     conn.commit()
-    return int(cursor.lastrowid)
+    return asset_id
 
 
 def link_asset_practice(conn, asset_id: int, practice_id: int) -> bool:
@@ -204,6 +296,15 @@ def link_asset_practice(conn, asset_id: int, practice_id: int) -> bool:
         """,
         (asset_id, practice_id),
     )
+    if cursor.rowcount > 0:
+        _audit_log(
+            conn,
+            "asset_practice",
+            int(cursor.lastrowid),
+            "create",
+            None,
+            {"asset_id": asset_id, "practice_id": practice_id},
+        )
     conn.commit()
     return cursor.rowcount > 0
 
@@ -283,3 +384,85 @@ def get_backlog(conn, assessment_id: int) -> List[Dict[str, Any]]:
     ).fetchall()
 
     return [dict(row) for row in rows]
+
+
+def get_assessment_trends(conn) -> List[Dict[str, Any]]:
+    total_row = conn.execute("SELECT COUNT(*) AS count FROM practice;").fetchone()
+    total_practices = int(total_row["count"] or 0)
+
+    rows = conn.execute(
+        """
+        SELECT
+            a.id AS assessment_id,
+            a.name AS assessment_name,
+            a.assessment_date AS assessment_date,
+            COUNT(ps.score) AS scored_practices,
+            AVG(ps.score) AS average_score
+        FROM assessment a
+        LEFT JOIN practice_score ps ON ps.assessment_id = a.id
+        GROUP BY a.id
+        ORDER BY a.assessment_date ASC, a.id ASC;
+        """
+    ).fetchall()
+
+    results = []
+    for row in rows:
+        scored = row["scored_practices"] or 0
+        completion = round((scored / total_practices) * 100, 2) if total_practices else 0.0
+        results.append(
+            {
+                "assessment_id": row["assessment_id"],
+                "assessment_name": row["assessment_name"],
+                "assessment_date": row["assessment_date"],
+                "average_score": row["average_score"],
+                "scored_practices": scored,
+                "total_practices": total_practices,
+                "completion_pct": completion,
+            }
+        )
+
+    return results
+
+
+def get_evolution(conn, days: int = 30) -> List[Dict[str, Any]]:
+    window = f"-{days} days"
+    rows = conn.execute(
+        """
+        SELECT
+            date(created_at) AS day,
+            entity_type,
+            COUNT(*) AS count
+        FROM audit_log
+        WHERE date(created_at) >= date('now', ?)
+        GROUP BY day, entity_type
+        ORDER BY day DESC;
+        """,
+        (window,),
+    ).fetchall()
+
+    mapping = {
+        "assessment": "assessments",
+        "asset": "assets",
+        "practice_score": "scores",
+        "asset_practice": "links",
+    }
+    buckets: Dict[str, Dict[str, Any]] = {}
+    for row in rows:
+        day = row["day"]
+        entry = buckets.get(day)
+        if entry is None:
+            entry = {
+                "date": day,
+                "total": 0,
+                "assessments": 0,
+                "assets": 0,
+                "scores": 0,
+                "links": 0,
+                "other": 0,
+            }
+            buckets[day] = entry
+        entry["total"] += row["count"]
+        key = mapping.get(row["entity_type"], "other")
+        entry[key] += row["count"]
+
+    return [buckets[day] for day in sorted(buckets.keys(), reverse=True)]

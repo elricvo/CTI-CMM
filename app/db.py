@@ -84,6 +84,20 @@ MIGRATIONS: Iterable[Tuple[int, str]] = (
         );
         """,
     ),
+    (
+        2,
+        """
+        CREATE TABLE IF NOT EXISTS audit_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            entity_type TEXT NOT NULL,
+            entity_id INTEGER NOT NULL,
+            action TEXT NOT NULL,
+            old_data TEXT,
+            new_data TEXT,
+            created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+        """,
+    ),
 )
 
 

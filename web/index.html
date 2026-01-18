@@ -287,6 +287,14 @@
         color: #7a5a2d;
       }
 
+      .subsection {
+        margin-top: 12px;
+      }
+
+      .subsection h3 {
+        margin-bottom: 8px;
+      }
+
       @keyframes rise {
         from {
           opacity: 0;
@@ -481,6 +489,21 @@
           </div>
           <div id="backlogTable"></div>
         </section>
+
+        <section>
+          <div class="panel-title">
+            <h2 data-i18n="evolution_section">Evolution</h2>
+            <small data-i18n="evolution_subtitle">Trends and changes over time</small>
+          </div>
+          <div class="subsection">
+            <h3 data-i18n="trend_section">Assessment trends</h3>
+            <div id="trendTable"></div>
+          </div>
+          <div class="subsection">
+            <h3 data-i18n="history_section">Change history</h3>
+            <div id="evolutionTable"></div>
+          </div>
+        </section>
       </div>
     </main>
 
@@ -563,6 +586,8 @@
         assets: [],
         backlog: [],
         dashboard: [],
+        evolution: [],
+        trends: [],
         currentAssessmentId: null,
         currentPractice: null,
         language: "en",
@@ -620,6 +645,21 @@
           dashboard_subtitle: "Average scores per domain",
           backlog_section: "Backlog",
           backlog_subtitle: "Priority list for target improvements",
+          evolution_section: "Evolution",
+          evolution_subtitle: "Trends and changes over time",
+          trend_section: "Assessment trends",
+          history_section: "Change history",
+          trend_assessment: "Assessment",
+          trend_avg_score: "Avg score",
+          trend_completion: "Completion",
+          history_date: "Date",
+          history_total: "Total",
+          history_assessments: "Assessments",
+          history_assets: "Assets",
+          history_scores: "Scores",
+          history_links: "Links",
+          trends_empty: "No assessment trends yet.",
+          history_empty: "No change history yet.",
           edit_practice_score: "Edit practice score",
           close: "Close",
           score: "Score",
@@ -706,6 +746,21 @@
           dashboard_subtitle: "Moyennes par domaine",
           backlog_section: "Backlog",
           backlog_subtitle: "Liste priorisée des améliorations cibles",
+          evolution_section: "Evolution",
+          evolution_subtitle: "Tendances et changements dans le temps",
+          trend_section: "Tendances des evaluations",
+          history_section: "Historique des changements",
+          trend_assessment: "Evaluation",
+          trend_avg_score: "Score moyen",
+          trend_completion: "Avancement",
+          history_date: "Date",
+          history_total: "Total",
+          history_assessments: "Evaluations",
+          history_assets: "Actifs",
+          history_scores: "Scores",
+          history_links: "Liens",
+          trends_empty: "Aucune tendance disponible.",
+          history_empty: "Aucun historique pour le moment.",
           edit_practice_score: "Modifier le score de pratique",
           close: "Fermer",
           score: "Score",
@@ -845,6 +900,8 @@
         renderDashboard();
         renderBacklog();
         renderAssets();
+        renderTrends();
+        renderEvolution();
         renderPracticeSelect();
       };
 
@@ -997,6 +1054,60 @@
         container.innerHTML = html;
       };
 
+      const renderTrends = () => {
+        const container = el("trendTable");
+        if (state.trends.length === 0) {
+          container.innerHTML = `<div class='empty'>${t("trends_empty")}</div>`;
+          return;
+        }
+        let html =
+          "<table><thead><tr>" +
+          `<th>${t("trend_assessment")}</th><th>${t("trend_avg_score")}</th><th>${t(
+            "trend_completion"
+          )}</th>` +
+          "</tr></thead><tbody>";
+        state.trends.forEach((row) => {
+          const avg = row.average_score === null || row.average_score === undefined ? "--" : row.average_score.toFixed(2);
+          html +=
+            "<tr>" +
+            `<td><strong>${row.assessment_name}</strong><br><span class='muted'>${row.assessment_date}</span></td>` +
+            `<td>${avg}</td>` +
+            `<td>${row.completion_pct}%</td>` +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        container.innerHTML = html;
+      };
+
+      const renderEvolution = () => {
+        const container = el("evolutionTable");
+        if (state.evolution.length === 0) {
+          container.innerHTML = `<div class='empty'>${t("history_empty")}</div>`;
+          return;
+        }
+        let html =
+          "<table><thead><tr>" +
+          `<th>${t("history_date")}</th><th>${t("history_assessments")}</th><th>${t(
+            "history_assets"
+          )}</th><th>${t("history_scores")}</th><th>${t(
+            "history_links"
+          )}</th><th>${t("history_total")}</th>` +
+          "</tr></thead><tbody>";
+        state.evolution.forEach((row) => {
+          html +=
+            "<tr>" +
+            `<td>${row.date}</td>` +
+            `<td>${row.assessments}</td>` +
+            `<td>${row.assets}</td>` +
+            `<td>${row.scores}</td>` +
+            `<td>${row.links}</td>` +
+            `<td><strong>${row.total}</strong></td>` +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        container.innerHTML = html;
+      };
+
       const renderAssets = () => {
         const list = el("assetList");
         const select = el("assetSelect");
@@ -1115,12 +1226,24 @@
         renderAssets();
       };
 
+      const loadTrends = async () => {
+        state.trends = await api.get("/api/assessment-trends");
+        renderTrends();
+      };
+
+      const loadEvolution = async () => {
+        state.evolution = await api.get("/api/evolution?days=30");
+        renderEvolution();
+      };
+
       const refreshAll = async () => {
         await loadAssessments();
         await loadDomains();
         await loadDashboard();
         await loadBacklog();
         await loadAssets();
+        await loadTrends();
+        await loadEvolution();
       };
 
       const updateAssessmentLabel = () => {
