@@ -503,6 +503,10 @@
             <h3 data-i18n="history_section">Change history</h3>
             <div id="evolutionTable"></div>
           </div>
+          <div class="subsection">
+            <h3 data-i18n="recent_section">Recent changes</h3>
+            <div id="recentTable"></div>
+          </div>
         </section>
       </div>
     </main>
@@ -588,6 +592,7 @@
         dashboard: [],
         evolution: [],
         trends: [],
+        recentChanges: [],
         currentAssessmentId: null,
         currentPractice: null,
         language: "en",
@@ -649,6 +654,7 @@
           evolution_subtitle: "Trends and changes over time",
           trend_section: "Assessment trends",
           history_section: "Change history",
+          recent_section: "Recent changes",
           trend_assessment: "Assessment",
           trend_avg_score: "Avg score",
           trend_completion: "Completion",
@@ -658,6 +664,18 @@
           history_assets: "Assets",
           history_scores: "Scores",
           history_links: "Links",
+          last_update: "Last update",
+          recent_time: "Time",
+          recent_action: "Action",
+          recent_entity: "Entity",
+          recent_details: "Details",
+          recent_empty: "No recent changes.",
+          entity_assessment: "Assessment",
+          entity_asset: "Asset",
+          entity_score: "Practice score",
+          entity_link: "Asset link",
+          action_create: "Create",
+          action_update: "Update",
           trends_empty: "No assessment trends yet.",
           history_empty: "No change history yet.",
           edit_practice_score: "Edit practice score",
@@ -748,17 +766,30 @@
           backlog_subtitle: "Liste priorisée des améliorations cibles",
           evolution_section: "Evolution",
           evolution_subtitle: "Tendances et changements dans le temps",
-          trend_section: "Tendances des evaluations",
+          trend_section: "Tendances des évaluations",
           history_section: "Historique des changements",
-          trend_assessment: "Evaluation",
+          recent_section: "Dernières modifications",
+          trend_assessment: "Évaluation",
           trend_avg_score: "Score moyen",
           trend_completion: "Avancement",
           history_date: "Date",
           history_total: "Total",
-          history_assessments: "Evaluations",
+          history_assessments: "Évaluations",
           history_assets: "Actifs",
           history_scores: "Scores",
           history_links: "Liens",
+          last_update: "Dernière mise à jour",
+          recent_time: "Heure",
+          recent_action: "Action",
+          recent_entity: "Element",
+          recent_details: "Détails",
+          recent_empty: "Aucune modification récente.",
+          entity_assessment: "Évaluation",
+          entity_asset: "Actif",
+          entity_score: "Score de pratique",
+          entity_link: "Lien actif",
+          action_create: "Création",
+          action_update: "Mise à jour",
           trends_empty: "Aucune tendance disponible.",
           history_empty: "Aucun historique pour le moment.",
           edit_practice_score: "Modifier le score de pratique",
@@ -902,6 +933,7 @@
         renderAssets();
         renderTrends();
         renderEvolution();
+        renderRecentChanges();
         renderPracticeSelect();
       };
 
@@ -958,7 +990,7 @@
         let html =
           "<table><thead><tr>" +
           `<th>${t("domain")}</th><th>${t("objective")}</th><th>${t("practice_header")}</th>` +
-          `<th>${t("score")}</th><th>${t("target")}</th><th>${t("priority")}</th><th></th>` +
+          `<th>${t("score")}</th><th>${t("target")}</th><th>${t("priority")}</th><th>${t("last_update")}</th><th></th>` +
           "</tr></thead><tbody>";
         rows.forEach(({ domain, objective, practice }) => {
           const scoreLabel =
@@ -971,6 +1003,7 @@
               : `CTI${practice.target_score}`;
           const priorityLabel =
             practice.priority === null || practice.priority === undefined ? "--" : practice.priority;
+          const updatedAt = practice.updated_at ? practice.updated_at : "--";
           html +=
             "<tr>" +
             `<td><strong>${domain.code}</strong><br><span class='muted'>${domain.name}</span></td>` +
@@ -979,6 +1012,7 @@
             `<td>${scoreLabel}</td>` +
             `<td>${targetLabel}</td>` +
             `<td>${priorityLabel}</td>` +
+            `<td>${updatedAt}</td>` +
             `<td><button class='secondary' data-practice='${practice.id}'>${t("edit")}</button></td>` +
             "</tr>";
         });
@@ -1031,7 +1065,7 @@
           "<table><thead><tr>" +
           `<th>${t("practice_header")}</th><th>${t("target")}</th><th>${t("priority")}</th><th>${t(
             "impact_effort"
-          )}</th><th>${t("target_date")}</th>` +
+          )}</th><th>${t("target_date")}</th><th></th>` +
           "</tr></thead><tbody>";
         state.backlog.forEach((item) => {
           const impact = item.impact === null || item.impact === undefined ? "--" : item.impact;
@@ -1048,10 +1082,15 @@
             `<td>${priority}</td>` +
             `<td>${impact} / ${effort}</td>` +
             `<td>${item.target_date || "--"}</td>` +
+            `<td><button class='secondary' data-practice='${item.practice_id}'>${t("edit")}</button></td>` +
             "</tr>";
         });
         html += "</tbody></table>";
         container.innerHTML = html;
+
+        container.querySelectorAll("button[data-practice]").forEach((btn) => {
+          btn.addEventListener("click", () => openScoreModal(Number(btn.dataset.practice)));
+        });
       };
 
       const renderTrends = () => {
@@ -1102,6 +1141,64 @@
             `<td>${row.scores}</td>` +
             `<td>${row.links}</td>` +
             `<td><strong>${row.total}</strong></td>` +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        container.innerHTML = html;
+      };
+
+      const formatRecentDetails = (row) => {
+        const raw = row.new_data || row.old_data;
+        if (!raw) {
+          return `#${row.entity_id}`;
+        }
+        try {
+          const data = JSON.parse(raw);
+          if (data.name) {
+            return `${data.name} (#${row.entity_id})`;
+          }
+          if (data.practice_id && data.assessment_id) {
+            return `assessment ${data.assessment_id}, practice ${data.practice_id}`;
+          }
+        } catch (err) {
+          return `#${row.entity_id}`;
+        }
+        return `#${row.entity_id}`;
+      };
+
+      const entityLabel = (entityType) => {
+        if (entityType === "assessment") return t("entity_assessment");
+        if (entityType === "asset") return t("entity_asset");
+        if (entityType === "practice_score") return t("entity_score");
+        if (entityType === "asset_practice") return t("entity_link");
+        return entityType;
+      };
+
+      const actionLabel = (action) => {
+        if (action === "create") return t("action_create");
+        if (action === "update") return t("action_update");
+        return action;
+      };
+
+      const renderRecentChanges = () => {
+        const container = el("recentTable");
+        if (state.recentChanges.length === 0) {
+          container.innerHTML = `<div class='empty'>${t("recent_empty")}</div>`;
+          return;
+        }
+        let html =
+          "<table><thead><tr>" +
+          `<th>${t("recent_time")}</th><th>${t("recent_action")}</th><th>${t(
+            "recent_entity"
+          )}</th><th>${t("recent_details")}</th>` +
+          "</tr></thead><tbody>";
+        state.recentChanges.forEach((row) => {
+          html +=
+            "<tr>" +
+            `<td>${row.created_at}</td>` +
+            `<td>${actionLabel(row.action)}</td>` +
+            `<td>${entityLabel(row.entity_type)}</td>` +
+            `<td>${formatRecentDetails(row)}</td>` +
             "</tr>";
         });
         html += "</tbody></table>";
@@ -1236,6 +1333,11 @@
         renderEvolution();
       };
 
+      const loadRecentChanges = async () => {
+        state.recentChanges = await api.get("/api/recent-changes?limit=15");
+        renderRecentChanges();
+      };
+
       const refreshAll = async () => {
         await loadAssessments();
         await loadDomains();
@@ -1244,6 +1346,7 @@
         await loadAssets();
         await loadTrends();
         await loadEvolution();
+        await loadRecentChanges();
       };
 
       const updateAssessmentLabel = () => {

@@ -19,5 +19,8 @@ class TestAuditLog(unittest.TestCase):
             self.assertIsNotNone(row)
             self.assertEqual(row["entity_id"], assessment_id)
             self.assertEqual(row["action"], "create")
+
+            recent = services.get_recent_changes(conn, limit=15)
+            self.assertGreaterEqual(len(recent), 1)
         finally:
             conn.close()

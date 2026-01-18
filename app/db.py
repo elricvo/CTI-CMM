@@ -98,6 +98,17 @@ MIGRATIONS: Iterable[Tuple[int, str]] = (
         );
         """,
     ),
+    (
+        3,
+        """
+        ALTER TABLE practice_score
+        ADD COLUMN updated_at TEXT NOT NULL DEFAULT (datetime('now'));
+
+        UPDATE practice_score
+        SET updated_at = datetime('now')
+        WHERE updated_at IS NULL;
+        """,
+    ),
 )
 
 

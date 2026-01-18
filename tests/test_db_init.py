@@ -22,9 +22,14 @@ class TestDbInit(unittest.TestCase):
                         "SELECT name FROM sqlite_master WHERE type='table';"
                     )
                 }
+                columns = {
+                    row[1]
+                    for row in conn.execute("PRAGMA table_info(practice_score);")
+                }
             finally:
                 conn.close()
 
             self.assertIn("schema_version", tables)
             self.assertIn("domain", tables)
             self.assertIn("audit_log", tables)
+            self.assertIn("updated_at", columns)

@@ -47,7 +47,8 @@ def _fetch_practice_score(conn, assessment_id: int, practice_id: int) -> Optiona
             effort,
             priority,
             target_date,
-            notes
+            notes,
+            updated_at
         FROM practice_score
         WHERE assessment_id = ? AND practice_id = ?;
         """,
@@ -80,7 +81,8 @@ def get_domains(conn, assessment_id: Optional[int] = None) -> List[Dict[str, Any
             ps.effort AS effort,
             ps.priority AS priority,
             ps.target_date AS target_date,
-            ps.notes AS notes
+            ps.notes AS notes,
+            ps.updated_at AS updated_at
         FROM domain d
         LEFT JOIN objective o ON o.domain_id = d.id
         LEFT JOIN practice p ON p.objective_id = o.id
@@ -145,6 +147,7 @@ def get_domains(conn, assessment_id: Optional[int] = None) -> List[Dict[str, Any
                 "priority": row["priority"],
                 "target_date": row["target_date"],
                 "notes": row["notes"],
+                "updated_at": row["updated_at"],
             }
         )
 
@@ -213,9 +216,10 @@ def upsert_practice_score(conn, payload: Dict[str, Any]) -> int:
             effort,
             priority,
             target_date,
-            notes
+            notes,
+            updated_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
         ON CONFLICT (assessment_id, practice_id) DO UPDATE SET
             score = excluded.score,
             evidence = excluded.evidence,
@@ -225,7 +229,8 @@ def upsert_practice_score(conn, payload: Dict[str, Any]) -> int:
             effort = excluded.effort,
             priority = excluded.priority,
             target_date = excluded.target_date,
-            notes = excluded.notes;
+            notes = excluded.notes,
+            updated_at = datetime('now');
         """,
         (
             payload["assessment_id"],
@@ -466,3 +471,23 @@ def get_evolution(conn, days: int = 30) -> List[Dict[str, Any]]:
         entry[key] += row["count"]
 
     return [buckets[day] for day in sorted(buckets.keys(), reverse=True)]
+
+
+def get_recent_changes(conn, limit: int = 15) -> List[Dict[str, Any]]:
+    rows = conn.execute(
+        """
+        SELECT
+            id,
+            entity_type,
+            entity_id,
+            action,
+            old_data,
+            new_data,
+            created_at
+        FROM audit_log
+        ORDER BY datetime(created_at) DESC, id DESC
+        LIMIT ?;
+        """,
+        (limit,),
+    ).fetchall()
+    return [dict(row) for row in rows]

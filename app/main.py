@@ -170,6 +170,14 @@ def create_app() -> FastAPI:
         finally:
             conn.close()
 
+    @app.get("/api/recent-changes")
+    def get_recent_changes(limit: int = Query(15, ge=1, le=100)):
+        conn = connect()
+        try:
+            return services.get_recent_changes(conn, limit)
+        finally:
+            conn.close()
+
     @app.get("/api/assets")
     def get_assets():
         conn = connect()

@@ -135,6 +135,7 @@ The **Evolution** panel provides:
 
 - Assessment trends (average score and completion by assessment).
 - Change history (daily counts of created/updated items).
+- Recent changes (last 15 updates and creations).
 
 ## Data persistence
 
