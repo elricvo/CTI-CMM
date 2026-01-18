@@ -88,6 +88,24 @@ Ou via docker-compose demo:
 docker compose -f docker-compose.demo.yml up --build
 ```
 
+## Construire (Mode B - EXE Windows)
+
+Prerequis:
+
+- Windows 10/11
+- Python 3.11+
+- pip (inclus avec Python)
+
+Procedure (non testee ici):
+
+```bash
+python -m venv .venv
+.venv\\Scripts\\python.exe -m pip install -r requirements.txt pyinstaller
+pyinstaller --onefile --name cti-cmm app/main.py
+```
+
+Le binaire est genere dans `dist\\cti-cmm.exe`.
+
 ## Donnees de test
 
 Pour lancer avec un jeu de donnees riche:
