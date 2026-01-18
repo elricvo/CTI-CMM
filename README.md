@@ -5,6 +5,13 @@ Date : 2026-01-18
 
 Mini web-app Python + SQLite pour evaluer la maturite CTI/Risk.
 
+## Excel n'est pas une base de donnees
+
+Excel n'est pas une solution de base de donnees : il manque de fiabilite
+transactionnelle, de controle d'acces et de gestion des verrous.
+
+![Excel is not a database](docs/images/excel-is-not-a-database.jpg)
+
 ## CTI-CMM en bref
 
 CTI-CMM signifie :

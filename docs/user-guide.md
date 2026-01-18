@@ -9,6 +9,13 @@ CTI-CMM Mini is a lightweight web app for CTI/Risk maturity assessments.
 It lets you create assessments, score practices, link assets, and view
 an aggregated dashboard and backlog.
 
+## Excel is not a database
+
+Excel is not a database solution: it lacks transactional safety, access
+controls, and concurrency management.
+
+![Excel is not a database](images/excel-is-not-a-database.jpg)
+
 ## CTI-CMM basics
 
 CTI-CMM stands for:
