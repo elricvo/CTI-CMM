@@ -1,0 +1,461 @@
+{
+  "domains": [
+    {
+      "code": "GOV",
+      "name": "Governance",
+      "description": "CTI governance and steering.",
+      "objectives": [
+        {
+          "code": "GOV-OBJ-1",
+          "name": "Strategy and oversight",
+          "description": "Define direction and KPIs.",
+          "practices": [
+            {
+              "code": "GOV-P1",
+              "name": "CTI charter",
+              "description": "Define scope and mission."
+            },
+            {
+              "code": "GOV-P2",
+              "name": "Stakeholder mapping",
+              "description": "Maintain a stakeholder map."
+            },
+            {
+              "code": "GOV-P3",
+              "name": "Metrics and reporting",
+              "description": "Track KPIs and report."
+            }
+          ]
+        },
+        {
+          "code": "GOV-OBJ-2",
+          "name": "Policy and risk",
+          "description": "Align with policy and risk management.",
+          "practices": [
+            {
+              "code": "GOV-P4",
+              "name": "Data classification",
+              "description": "Define data classification for CTI."
+            },
+            {
+              "code": "GOV-P5",
+              "name": "Legal review",
+              "description": "Review legal and compliance requirements."
+            },
+            {
+              "code": "GOV-P6",
+              "name": "Risk register",
+              "description": "Maintain CTI risk register."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "COL",
+      "name": "Collection and Detection",
+      "description": "Collection planning and detection coverage.",
+      "objectives": [
+        {
+          "code": "COL-OBJ-1",
+          "name": "Collection planning",
+          "description": "Plan and prioritize collection.",
+          "practices": [
+            {
+              "code": "COL-P1",
+              "name": "Collection requirements",
+              "description": "Define collection requirements."
+            },
+            {
+              "code": "COL-P2",
+              "name": "Source inventory",
+              "description": "Maintain source inventory."
+            },
+            {
+              "code": "COL-P3",
+              "name": "Collection tooling",
+              "description": "Operate collection tooling."
+            }
+          ]
+        },
+        {
+          "code": "COL-OBJ-2",
+          "name": "Detection coverage",
+          "description": "Align CTI with detection coverage.",
+          "practices": [
+            {
+              "code": "COL-P4",
+              "name": "Telemetry coverage",
+              "description": "Maintain telemetry coverage."
+            },
+            {
+              "code": "COL-P5",
+              "name": "Use-case mapping",
+              "description": "Map CTI to detection use-cases."
+            },
+            {
+              "code": "COL-P6",
+              "name": "Gap analysis",
+              "description": "Track detection gaps."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "code": "ANL",
+      "name": "Analysis and Production",
+      "description": "Analysis workflow and dissemination.",
+      "objectives": [
+        {
+          "code": "ANL-OBJ-1",
+          "name": "Analysis workflow",
+          "description": "Structure analysis work.",
+          "practices": [
+            {
+              "code": "ANL-P1",
+              "name": "Triage process",
+              "description": "Document triage workflow."
+            },
+            {
+              "code": "ANL-P2",
+              "name": "Analyst playbooks",
+              "description": "Use standard playbooks."
+            },
+            {
+              "code": "ANL-P3",
+              "name": "Quality review",
+              "description": "Review analysis quality."
+            }
+          ]
+        },
+        {
+          "code": "ANL-OBJ-2",
+          "name": "Dissemination",
+          "description": "Share CTI outputs.",
+          "practices": [
+            {
+              "code": "ANL-P4",
+              "name": "Briefing cadence",
+              "description": "Define briefing cadence."
+            },
+            {
+              "code": "ANL-P5",
+              "name": "Stakeholder feedback",
+              "description": "Collect stakeholder feedback."
+            },
+            {
+              "code": "ANL-P6",
+              "name": "Reporting formats",
+              "description": "Standardize reporting formats."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "assessments": [
+    {
+      "name": "Baseline 2026",
+      "assessment_date": "2026-01-10",
+      "notes": "Initial maturity baseline."
+    },
+    {
+      "name": "Midyear 2026",
+      "assessment_date": "2026-06-20",
+      "notes": "Midyear checkpoint."
+    }
+  ],
+  "assets": [
+    {
+      "name": "SIEM Platform",
+      "asset_type": "Tooling",
+      "criticality": 5,
+      "tags": "tier-1,siem"
+    },
+    {
+      "name": "Threat Intel Platform",
+      "asset_type": "Tooling",
+      "criticality": 4,
+      "tags": "tip,cti"
+    },
+    {
+      "name": "CTI Team",
+      "asset_type": "People",
+      "criticality": 5,
+      "tags": "analysts"
+    },
+    {
+      "name": "SOC Playbooks",
+      "asset_type": "Process",
+      "criticality": 3,
+      "tags": "soc,playbooks"
+    },
+    {
+      "name": "Vulnerability Scanner",
+      "asset_type": "Tooling",
+      "criticality": 3,
+      "tags": "vuln,exposure"
+    },
+    {
+      "name": "Executive Briefings",
+      "asset_type": "Reporting",
+      "criticality": 2,
+      "tags": "exec,briefing"
+    }
+  ],
+  "asset_links": [
+    {
+      "asset_name": "SIEM Platform",
+      "practice_code": "COL-P4"
+    },
+    {
+      "asset_name": "Threat Intel Platform",
+      "practice_code": "COL-P3"
+    },
+    {
+      "asset_name": "CTI Team",
+      "practice_code": "ANL-P1"
+    },
+    {
+      "asset_name": "SOC Playbooks",
+      "practice_code": "ANL-P2"
+    },
+    {
+      "asset_name": "Vulnerability Scanner",
+      "practice_code": "COL-P6"
+    },
+    {
+      "asset_name": "Executive Briefings",
+      "practice_code": "ANL-P4"
+    }
+  ],
+  "scores": [
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "GOV-P1",
+      "score": 1,
+      "target_score": 3,
+      "impact": 4,
+      "effort": 2,
+      "priority": 8,
+      "target_date": "2026-04-30",
+      "poc": "CTI Lead",
+      "evidence": "Charter draft",
+      "notes": "Draft only"
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "GOV-P2",
+      "score": 2,
+      "target_score": 3,
+      "impact": 3,
+      "effort": 2,
+      "target_date": "2026-05-15",
+      "poc": "CTI PM"
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "GOV-P3",
+      "score": 1,
+      "target_score": 2,
+      "impact": 2,
+      "effort": 1
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "GOV-P4",
+      "score": 0,
+      "target_score": 2,
+      "impact": 4,
+      "effort": 3,
+      "target_date": "2026-06-30"
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "COL-P1",
+      "score": 1,
+      "target_score": 2,
+      "impact": 3,
+      "effort": 3
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "COL-P2",
+      "score": 2,
+      "target_score": 2,
+      "impact": 2,
+      "effort": 1
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "COL-P3",
+      "score": 1,
+      "target_score": 3,
+      "impact": 5,
+      "effort": 4,
+      "target_date": "2026-09-01"
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "COL-P4",
+      "score": 0,
+      "target_score": 2,
+      "impact": 5,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "COL-P5",
+      "score": 1,
+      "target_score": 2,
+      "impact": 4,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "ANL-P1",
+      "score": 1,
+      "target_score": 2,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "ANL-P2",
+      "score": 0,
+      "target_score": 2,
+      "impact": 4,
+      "effort": 3
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "ANL-P3",
+      "score": 2,
+      "target_score": 3,
+      "impact": 2,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "ANL-P4",
+      "score": 1,
+      "target_score": 2,
+      "impact": 3,
+      "effort": 1
+    },
+    {
+      "assessment_name": "Baseline 2026",
+      "practice_code": "ANL-P5",
+      "score": null,
+      "target_score": 2,
+      "impact": 2,
+      "effort": 2,
+      "notes": "Not started"
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "GOV-P1",
+      "score": 2,
+      "target_score": 3,
+      "impact": 4,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "GOV-P2",
+      "score": 2,
+      "target_score": 3,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "GOV-P3",
+      "score": 2,
+      "target_score": 2,
+      "impact": 2,
+      "effort": 1
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "GOV-P4",
+      "score": 1,
+      "target_score": 2,
+      "impact": 4,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "GOV-P5",
+      "score": 1,
+      "target_score": 2,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "COL-P1",
+      "score": 2,
+      "target_score": 2,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "COL-P3",
+      "score": 2,
+      "target_score": 3,
+      "impact": 4,
+      "effort": 3
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "COL-P4",
+      "score": 1,
+      "target_score": 2,
+      "impact": 4,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "COL-P6",
+      "score": 0,
+      "target_score": 2,
+      "impact": 5,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "ANL-P1",
+      "score": 2,
+      "target_score": 2,
+      "impact": 3,
+      "effort": 2
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "ANL-P2",
+      "score": 1,
+      "target_score": 2,
+      "impact": 3,
+      "effort": 3
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "ANL-P4",
+      "score": 1,
+      "target_score": 2,
+      "impact": 3,
+      "effort": 1
+    },
+    {
+      "assessment_name": "Midyear 2026",
+      "practice_code": "ANL-P6",
+      "score": 0,
+      "target_score": 1,
+      "impact": 2,
+      "effort": 1
+    }
+  ]
+}

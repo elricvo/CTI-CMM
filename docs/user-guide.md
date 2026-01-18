@@ -36,6 +36,27 @@ Open the UI:
 
 - http://127.0.0.1:9999/
 
+## Start with test data
+
+Use the `--test-data` flag to launch with a rich dataset. This uses
+`data-test/` so it does not overwrite your primary data folder.
+
+```bash
+./scripts/run.sh --test-data
+```
+
+Windows PowerShell:
+
+```powershell
+.\scripts\run.ps1 --test-data
+```
+
+Windows CMD:
+
+```bat
+scripts\run.bat --test-data
+```
+
 ## Language selection
 
 Use the Language selector in the header to switch between English and French.
@@ -50,6 +71,14 @@ Example:
 ```bash
 APP_DEFAULT_LANG=fr ./scripts/run.sh
 ```
+
+## Quit the app
+
+Use the **Quit** button in the header. It triggers a safe shutdown so you
+do not need to press Ctrl+C in the terminal.
+
+Note: for security, shutdown is allowed only from localhost. To allow it
+from another host, set `APP_ALLOW_QUIT=1`.
 
 ## Create an assessment
 

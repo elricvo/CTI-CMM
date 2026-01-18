@@ -49,6 +49,13 @@
         min-width: 160px;
       }
 
+      .header-actions {
+        display: flex;
+        align-items: flex-end;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
       h1,
       h2,
       h3 {
@@ -180,6 +187,21 @@
         box-shadow: 0 8px 20px rgba(47, 107, 106, 0.18);
       }
 
+      button.danger {
+        background: var(--accent-0);
+      }
+
+      button.danger:hover {
+        box-shadow: 0 8px 20px rgba(201, 79, 61, 0.24);
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        box-shadow: none;
+        transform: none;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
@@ -295,12 +317,15 @@
             Lightweight assessment cockpit for CTI maturity scoring and roadmap.
           </p>
         </div>
-        <div class="lang-switch">
-          <label for="langSelect" data-i18n="language_label">Language</label>
-          <select id="langSelect">
-            <option value="en" data-i18n="language_en">English</option>
-            <option value="fr" data-i18n="language_fr">Français</option>
-          </select>
+        <div class="header-actions">
+          <div class="lang-switch">
+            <label for="langSelect" data-i18n="language_label">Language</label>
+            <select id="langSelect">
+              <option value="en" data-i18n="language_en">English</option>
+              <option value="fr" data-i18n="language_fr">Français</option>
+            </select>
+          </div>
+          <button id="quitBtn" class="danger" type="button" data-i18n="quit">Quit</button>
         </div>
       </div>
       <div class="status" id="statusBadge">
@@ -558,6 +583,9 @@
           status_checking: "Checking API...",
           status_connected: "API connected",
           status_unreachable: "API not reachable",
+          status_stopping: "Stopping service...",
+          quit: "Quit",
+          quit_confirm: "Save and stop the service now?",
           assessment_section: "Assessment",
           assessment_none_selected: "No assessment selected",
           select_assessment: "Select assessment",
@@ -641,6 +669,9 @@
           status_checking: "Vérification de l'API...",
           status_connected: "API connectée",
           status_unreachable: "API inaccessible",
+          status_stopping: "Arrêt du service...",
+          quit: "Quitter",
+          quit_confirm: "Sauvegarder et arrêter le service maintenant ?",
           assessment_section: "Évaluation",
           assessment_none_selected: "Aucune évaluation sélectionnée",
           select_assessment: "Choisir une évaluation",
@@ -775,6 +806,7 @@
           ok: { dot: "#2f6b6a", badge: "#eaf5f2", color: "#2f6b6a" },
           down: { dot: "#c94f3d", badge: "#fdecea", color: "#9b3b2f" },
           checking: { dot: "#e2a23b", badge: "#fff6e6", color: "#8c5a15" },
+          stopping: { dot: "#c97f3d", badge: "#fff0e2", color: "#9a5a24" },
         };
         const active = styles[statusKey] || styles.checking;
         const textKey =
@@ -782,6 +814,8 @@
             ? "status_connected"
             : statusKey === "down"
             ? "status_unreachable"
+            : statusKey === "stopping"
+            ? "status_stopping"
             : "status_checking";
         el("statusText").textContent = t(textKey);
         el("statusDot").style.background = active.dot;
@@ -1105,6 +1139,22 @@
       const bindEvents = () => {
         el("langSelect").addEventListener("change", (event) => {
           setLanguage(event.target.value);
+        });
+
+        el("quitBtn").addEventListener("click", async () => {
+          if (!confirm(t("quit_confirm"))) {
+            return;
+          }
+          el("quitBtn").disabled = true;
+          const previousStatus = state.apiStatus;
+          setStatus("stopping");
+          try {
+            await api.post("/api/quit", {});
+          } catch (err) {
+            el("quitBtn").disabled = false;
+            el("assessmentMsg").textContent = `${t("error_prefix")} ${err.message}`;
+            setStatus(previousStatus || "ok");
+          }
         });
 
         el("assessmentSelect").addEventListener("change", async (event) => {

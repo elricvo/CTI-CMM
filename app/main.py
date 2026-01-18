@@ -1,12 +1,16 @@
 from pathlib import Path
+import os
 import sqlite3
+import signal
+import threading
+import time
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 
-from app.config import get_default_language
+from app.config import get_default_language, is_quit_allowed
 from app.db import connect
 from app.seed import seed_db
 from app import services
@@ -62,6 +66,15 @@ def config_payload():
     return {"default_language": get_default_language()}
 
 
+def request_shutdown() -> None:
+    def _shutdown() -> None:
+        time.sleep(0.5)
+        os.kill(os.getpid(), signal.SIGINT)
+
+    thread = threading.Thread(target=_shutdown, daemon=True)
+    thread.start()
+
+
 def _validate_score(value: Optional[int], field_name: str) -> None:
     if value is None:
         return
@@ -82,6 +95,14 @@ def create_app() -> FastAPI:
     app.get("/")(index)
     app.get("/api/healthz")(healthz)
     app.get("/api/config")(config_payload)
+
+    @app.post("/api/quit")
+    def post_quit(request: Request):
+        client_host = request.client.host if request.client else None
+        if not is_quit_allowed(client_host):
+            raise HTTPException(status_code=403, detail="shutdown not allowed")
+        request_shutdown()
+        return {"status": "shutting_down"}
 
     @app.get("/api/domains")
     def get_domains(assessment_id: Optional[int] = Query(None, gt=0)):

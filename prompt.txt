@@ -1,0 +1,6 @@
+On va faire deux choses :
+
+1- on va ajouter un bouton quitter dans l'interface web qui va sauvegarder tout ce qui a été fait par l'utilisateur et arrêter le service (plus nécessaire de faire un ctrl + C)
+
+2- on va créer un seed de jeux de tests avec une option de lancement dans le script run qui permettra de lancer la solution avec le jeu de données de tests. Le jeu doit être suffisament conséquent pour permettre de tester toutes les fonctions, toutes les relations et fournir des tableaux de board conséquents
+

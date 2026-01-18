@@ -6,6 +6,13 @@ ROOT_DIR="$(cd -- "${SCRIPT_DIR}/.." && pwd)"
 
 cd "${ROOT_DIR}"
 
+for arg in "$@"; do
+  if [[ "${arg}" == "--test-data" ]]; then
+    export APP_TEST_DATA=1
+    export APP_DATA_DIR="${ROOT_DIR}/data-test"
+  fi
+done
+
 PYTHON_BIN="python3"
 if [[ -x "${ROOT_DIR}/.venv/bin/python" ]]; then
   PYTHON_BIN="${ROOT_DIR}/.venv/bin/python"

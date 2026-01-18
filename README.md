@@ -32,6 +32,14 @@ python3 -m venv .venv
 
 Ouvrir: http://127.0.0.1:9999/
 
+## Donnees de test
+
+Pour lancer avec un jeu de donnees riche:
+
+```bash
+./scripts/run.sh --test-data
+```
+
 ## Langue
 
 Selecteur de langue dans l'UI (EN/FR). Le defaut serveur se regle via
