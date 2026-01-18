@@ -1338,15 +1338,19 @@
         renderRecentChanges();
       };
 
+      const refreshHistory = async () => {
+        await loadTrends();
+        await loadEvolution();
+        await loadRecentChanges();
+      };
+
       const refreshAll = async () => {
         await loadAssessments();
         await loadDomains();
         await loadDashboard();
         await loadBacklog();
         await loadAssets();
-        await loadTrends();
-        await loadEvolution();
-        await loadRecentChanges();
+        await refreshHistory();
       };
 
       const updateAssessmentLabel = () => {
@@ -1439,6 +1443,7 @@
             el("assetCriticality").value = "";
             el("assetTags").value = "";
             await loadAssets();
+            await refreshHistory();
           } catch (err) {
             el("assetList").innerHTML = `<div class='empty'>${t("error_prefix")} ${err.message}</div>`;
           }
@@ -1459,6 +1464,7 @@
             el("assetLinkMsg").textContent = result.created
               ? t("link_created")
               : t("link_exists");
+            await refreshHistory();
           } catch (err) {
             el("assetLinkMsg").textContent = `${t("error_prefix")} ${err.message}`;
           }
@@ -1488,6 +1494,7 @@
             await loadDomains();
             await loadDashboard();
             await loadBacklog();
+            await refreshHistory();
           } catch (err) {
             el("scoreMsg").textContent = `${t("error_prefix")} ${err.message}`;
           }
