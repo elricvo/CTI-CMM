@@ -119,6 +119,13 @@ from another host, set `APP_ALLOW_QUIT=1`.
 
 The dashboard and backlog refresh automatically after saving.
 
+## Navigation
+
+The interface has two views:
+
+- **Dashboard**: summary tables and charts.
+- **Workspace**: assessments, practices, assets, and backlog.
+
 ## Manage assets
 
 1) Create an asset in the **Assets** section.
@@ -129,6 +136,16 @@ The dashboard and backlog refresh automatically after saving.
 - **Dashboard** shows average score and completion per domain.
 - **Backlog** lists practices where target score is higher than current score.
 
+## Home dashboard (graphs)
+
+The home page aggregates charts:
+
+- Maturity by domain (average scores).
+- Maturity evolution by assessment.
+- Activity volume by day.
+- Asset coverage (linked practices per asset).
+- Backlog impact vs effort (prioritization map).
+
 ## Evolution dashboard
 
 The **Evolution** panel provides:
@@ -136,6 +153,15 @@ The **Evolution** panel provides:
 - Assessment trends (average score and completion by assessment).
 - Change history (daily counts of created/updated items).
 - Recent changes (last 15 updates and creations).
+
+## Filters
+
+Use the **Filters** panel in the workspace to narrow practices/backlog by:
+
+- Domain
+- Score (CTI0-CTI3 / N/A)
+- Search (practice name or code)
+- Min priority / Max effort
 
 ## Data persistence
 

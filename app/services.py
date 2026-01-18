@@ -267,6 +267,22 @@ def list_assets(conn) -> List[Dict[str, Any]]:
     return [dict(row) for row in rows]
 
 
+def get_asset_coverage(conn) -> List[Dict[str, Any]]:
+    rows = conn.execute(
+        """
+        SELECT
+            a.id AS asset_id,
+            a.name AS asset_name,
+            COUNT(ap.practice_id) AS linked_practices
+        FROM asset a
+        LEFT JOIN asset_practice ap ON ap.asset_id = a.id
+        GROUP BY a.id
+        ORDER BY linked_practices DESC, a.name ASC;
+        """
+    ).fetchall()
+    return [dict(row) for row in rows]
+
+
 def create_asset(
     conn, name: str, asset_type: Optional[str], criticality: Optional[int], tags: Optional[str]
 ) -> int:

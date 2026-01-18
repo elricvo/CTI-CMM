@@ -56,6 +56,24 @@
         flex-wrap: wrap;
       }
 
+      .nav {
+        display: flex;
+        gap: 8px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+
+      .nav button {
+        background: #f1ede3;
+        color: var(--ink-0);
+        border: 1px solid var(--line);
+      }
+
+      .nav button.active {
+        background: var(--accent-1);
+        color: #fff;
+      }
+
       h1,
       h2,
       h3 {
@@ -202,6 +220,30 @@
         transform: none;
       }
 
+      body[data-view="dashboard"] [data-view="workspace"] {
+        display: none;
+      }
+
+      body[data-view="workspace"] [data-view="dashboard"] {
+        display: none;
+      }
+
+      .chart {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .chart svg {
+        width: 100%;
+        height: auto;
+      }
+
+      .filters {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+      }
+
       table {
         width: 100%;
         border-collapse: collapse;
@@ -340,11 +382,52 @@
         <span class="status-dot" id="statusDot"></span>
         <span id="statusText" data-i18n="status_checking">Checking API...</span>
       </div>
+      <div class="nav" role="tablist">
+        <button id="navDashboard" class="active" type="button" data-i18n="nav_dashboard">
+          Dashboard
+        </button>
+        <button id="navWorkspace" type="button" data-i18n="nav_workspace">
+          Workspace
+        </button>
+      </div>
     </header>
 
     <main>
       <div class="stack">
-        <section>
+        <section data-view="dashboard">
+          <div class="panel-title">
+            <h2 data-i18n="active_assessment">Active assessment</h2>
+            <button
+              class="secondary"
+              id="gotoWorkspaceBtn"
+              type="button"
+              data-i18n="manage_assessments"
+            >
+              Manage
+            </button>
+          </div>
+          <div class="tagline" id="dashboardAssessmentLabel" data-i18n="assessment_none_selected">
+            No assessment selected
+          </div>
+          <div class="muted" style="margin-top: 8px;" data-i18n="active_assessment_hint">
+            Switch assessment in the workspace.
+          </div>
+        </section>
+        <section data-view="dashboard">
+          <div class="panel-title">
+            <h2 data-i18n="domain_chart_title">Maturity by domain</h2>
+            <small data-i18n="domain_chart_subtitle">Average score per domain</small>
+          </div>
+          <div class="chart" id="domainChart"></div>
+        </section>
+        <section data-view="dashboard">
+          <div class="panel-title">
+            <h2 data-i18n="backlog_scatter_title">Backlog impact vs effort</h2>
+            <small data-i18n="backlog_scatter_subtitle">Prioritization map</small>
+          </div>
+          <div class="chart" id="backlogScatter"></div>
+        </section>
+        <section data-view="workspace">
           <div class="panel-title">
             <h2 data-i18n="assessment_section">Assessment</h2>
             <span class="tagline" id="assessmentLabel" data-i18n="assessment_none_selected"
@@ -397,7 +480,54 @@
           <div id="assessmentMsg" class="muted" style="margin-top: 10px;"></div>
         </section>
 
-        <section>
+        <section data-view="workspace">
+          <div class="panel-title">
+            <h2 data-i18n="filters_section">Filters</h2>
+            <button id="filtersResetBtn" class="secondary" type="button" data-i18n="filters_reset">
+              Reset
+            </button>
+          </div>
+          <div class="filters">
+            <div>
+              <label for="filterDomain" data-i18n="filter_domain">Domain</label>
+              <select id="filterDomain"></select>
+            </div>
+            <div>
+              <label for="filterScore" data-i18n="filter_score">Score</label>
+              <select id="filterScore">
+                <option value="all" data-i18n="filter_all">All</option>
+                <option value="na" data-i18n="filter_na">N/A</option>
+                <option value="0">CTI0</option>
+                <option value="1">CTI1</option>
+                <option value="2">CTI2</option>
+                <option value="3">CTI3</option>
+              </select>
+            </div>
+            <div>
+              <label for="filterSearch" data-i18n="filter_search">Search</label>
+              <input
+                id="filterSearch"
+                type="text"
+                data-i18n-placeholder="filter_search_placeholder"
+                placeholder="Practice name or code"
+              />
+            </div>
+            <div>
+              <label for="filterMinPriority" data-i18n="filter_min_priority">
+                Min priority
+              </label>
+              <input id="filterMinPriority" type="number" min="0" max="10" />
+            </div>
+            <div>
+              <label for="filterMaxEffort" data-i18n="filter_max_effort">
+                Max effort
+              </label>
+              <input id="filterMaxEffort" type="number" min="0" max="10" />
+            </div>
+          </div>
+        </section>
+
+        <section data-view="workspace">
           <div class="panel-title">
             <h2 data-i18n="practices_section">Practices</h2>
             <small data-i18n="practices_subtitle">Scores and roadmap per practice</small>
@@ -405,7 +535,7 @@
           <div id="practiceTable"></div>
         </section>
 
-        <section>
+        <section data-view="workspace">
           <div class="panel-title">
             <h2 data-i18n="assets_section">Assets</h2>
             <small data-i18n="assets_subtitle">Inventory and practice links</small>
@@ -474,7 +604,7 @@
       </div>
 
       <div class="stack">
-        <section>
+        <section data-view="dashboard">
           <div class="panel-title">
             <h2 data-i18n="dashboard_section">Dashboard</h2>
             <small data-i18n="dashboard_subtitle">Average scores per domain</small>
@@ -482,7 +612,31 @@
           <div id="dashboardTable"></div>
         </section>
 
-        <section>
+        <section data-view="dashboard">
+          <div class="panel-title">
+            <h2 data-i18n="trend_chart_title">Maturity evolution</h2>
+            <small data-i18n="trend_chart_subtitle">Average score by assessment</small>
+          </div>
+          <div class="chart" id="trendChart"></div>
+        </section>
+
+        <section data-view="dashboard">
+          <div class="panel-title">
+            <h2 data-i18n="activity_chart_title">Activity volume</h2>
+            <small data-i18n="activity_chart_subtitle">Daily changes (30 days)</small>
+          </div>
+          <div class="chart" id="activityChart"></div>
+        </section>
+
+        <section data-view="dashboard">
+          <div class="panel-title">
+            <h2 data-i18n="asset_coverage_title">Asset coverage</h2>
+            <small data-i18n="asset_coverage_subtitle">Linked practices per asset</small>
+          </div>
+          <div class="chart" id="assetCoverageChart"></div>
+        </section>
+
+        <section data-view="workspace">
           <div class="panel-title">
             <h2 data-i18n="backlog_section">Backlog</h2>
             <small data-i18n="backlog_subtitle">Priority list for target improvements</small>
@@ -490,7 +644,7 @@
           <div id="backlogTable"></div>
         </section>
 
-        <section>
+        <section data-view="dashboard">
           <div class="panel-title">
             <h2 data-i18n="evolution_section">Evolution</h2>
             <small data-i18n="evolution_subtitle">Trends and changes over time</small>
@@ -593,10 +747,19 @@
         evolution: [],
         trends: [],
         recentChanges: [],
+        assetCoverage: [],
+        filters: {
+          domain: "all",
+          score: "all",
+          search: "",
+          minPriority: "",
+          maxEffort: "",
+        },
         currentAssessmentId: null,
         currentPractice: null,
         language: "en",
         apiStatus: "checking",
+        view: "dashboard",
       };
 
       const el = (id) => document.getElementById(id);
@@ -614,8 +777,13 @@
           status_connected: "API connected",
           status_unreachable: "API not reachable",
           status_stopping: "Stopping service...",
+          nav_dashboard: "Dashboard",
+          nav_workspace: "Workspace",
           quit: "Quit",
           quit_confirm: "Save and stop the service now?",
+          active_assessment: "Active assessment",
+          manage_assessments: "Manage",
+          active_assessment_hint: "Switch assessment in the workspace.",
           assessment_section: "Assessment",
           assessment_none_selected: "No assessment selected",
           select_assessment: "Select assessment",
@@ -650,6 +818,16 @@
           dashboard_subtitle: "Average scores per domain",
           backlog_section: "Backlog",
           backlog_subtitle: "Priority list for target improvements",
+          domain_chart_title: "Maturity by domain",
+          domain_chart_subtitle: "Average score per domain",
+          backlog_scatter_title: "Backlog impact vs effort",
+          backlog_scatter_subtitle: "Prioritization map",
+          trend_chart_title: "Maturity evolution",
+          trend_chart_subtitle: "Average score by assessment",
+          activity_chart_title: "Activity volume",
+          activity_chart_subtitle: "Daily changes (30 days)",
+          asset_coverage_title: "Asset coverage",
+          asset_coverage_subtitle: "Linked practices per asset",
           evolution_section: "Evolution",
           evolution_subtitle: "Trends and changes over time",
           trend_section: "Assessment trends",
@@ -676,8 +854,19 @@
           entity_link: "Asset link",
           action_create: "Create",
           action_update: "Update",
+          filters_section: "Filters",
+          filters_reset: "Reset",
+          filter_domain: "Domain",
+          filter_score: "Score",
+          filter_search: "Search",
+          filter_search_placeholder: "Practice name or code",
+          filter_min_priority: "Min priority",
+          filter_max_effort: "Max effort",
+          filter_all: "All",
+          filter_na: "N/A",
           trends_empty: "No assessment trends yet.",
           history_empty: "No change history yet.",
+          chart_empty: "No data available.",
           edit_practice_score: "Edit practice score",
           close: "Close",
           score: "Score",
@@ -728,8 +917,13 @@
           status_connected: "API connectée",
           status_unreachable: "API inaccessible",
           status_stopping: "Arrêt du service...",
+          nav_dashboard: "Tableau de bord",
+          nav_workspace: "Espace de travail",
           quit: "Quitter",
           quit_confirm: "Sauvegarder et arrêter le service maintenant ?",
+          active_assessment: "Évaluation active",
+          manage_assessments: "Gérer",
+          active_assessment_hint: "Changer l'évaluation dans l'espace de travail.",
           assessment_section: "Évaluation",
           assessment_none_selected: "Aucune évaluation sélectionnée",
           select_assessment: "Choisir une évaluation",
@@ -764,6 +958,16 @@
           dashboard_subtitle: "Moyennes par domaine",
           backlog_section: "Backlog",
           backlog_subtitle: "Liste priorisée des améliorations cibles",
+          domain_chart_title: "Maturité par domaine",
+          domain_chart_subtitle: "Score moyen par domaine",
+          backlog_scatter_title: "Backlog impact vs effort",
+          backlog_scatter_subtitle: "Carte de priorisation",
+          trend_chart_title: "Évolution de la maturité",
+          trend_chart_subtitle: "Score moyen par évaluation",
+          activity_chart_title: "Volume d'activité",
+          activity_chart_subtitle: "Changements quotidiens (30 jours)",
+          asset_coverage_title: "Couverture des actifs",
+          asset_coverage_subtitle: "Pratiques liées par actif",
           evolution_section: "Evolution",
           evolution_subtitle: "Tendances et changements dans le temps",
           trend_section: "Tendances des évaluations",
@@ -790,8 +994,19 @@
           entity_link: "Lien actif",
           action_create: "Création",
           action_update: "Mise à jour",
+          filters_section: "Filtres",
+          filters_reset: "Réinitialiser",
+          filter_domain: "Domaine",
+          filter_score: "Score",
+          filter_search: "Recherche",
+          filter_search_placeholder: "Nom ou code de pratique",
+          filter_min_priority: "Priorité min",
+          filter_max_effort: "Effort max",
+          filter_all: "Tous",
+          filter_na: "N/A",
           trends_empty: "Aucune tendance disponible.",
           history_empty: "Aucun historique pour le moment.",
+          chart_empty: "Aucune donnée disponible.",
           edit_practice_score: "Modifier le score de pratique",
           close: "Fermer",
           score: "Score",
@@ -909,6 +1124,36 @@
         el("statusBadge").style.color = active.color;
       };
 
+      const setView = (view) => {
+        state.view = view;
+        document.body.dataset.view = view;
+        el("navDashboard").classList.toggle("active", view === "dashboard");
+        el("navWorkspace").classList.toggle("active", view === "workspace");
+      };
+
+      const renderFilters = () => {
+        const select = el("filterDomain");
+        if (!select) {
+          return;
+        }
+        const previous = select.value || state.filters.domain;
+        select.innerHTML = "";
+        const all = document.createElement("option");
+        all.value = "all";
+        all.textContent = t("filter_all");
+        select.appendChild(all);
+        state.domains.forEach((domain) => {
+          const opt = document.createElement("option");
+          opt.value = domain.code;
+          opt.textContent = `${domain.code} - ${domain.name}`;
+          select.appendChild(opt);
+        });
+        select.value = previous;
+        if (!select.value) {
+          select.value = "all";
+        }
+      };
+
       const detectLanguage = (serverLang) => {
         const stored = localStorage.getItem("lang");
         if (stored && translations[stored]) {
@@ -953,6 +1198,56 @@
         return list;
       };
 
+      const getFilteredPracticeRows = () => {
+        const needle = state.filters.search.trim().toLowerCase();
+        return flattenPractices(state.domains).filter(({ domain, practice }) => {
+          if (state.filters.domain !== "all" && domain.code !== state.filters.domain) {
+            return false;
+          }
+          if (state.filters.score !== "all") {
+            if (state.filters.score === "na") {
+              if (practice.score !== null && practice.score !== undefined) {
+                return false;
+              }
+            } else if (Number(state.filters.score) !== practice.score) {
+              return false;
+            }
+          }
+          if (needle) {
+            const hay = `${practice.code} ${practice.name}`.toLowerCase();
+            if (!hay.includes(needle)) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+
+      const getFilteredBacklog = () => {
+        const minPriority =
+          state.filters.minPriority === "" ? null : Number(state.filters.minPriority);
+        const maxEffort =
+          state.filters.maxEffort === "" ? null : Number(state.filters.maxEffort);
+        return state.backlog.filter((item) => {
+          if (state.filters.domain !== "all" && item.domain_code !== state.filters.domain) {
+            return false;
+          }
+          const priority =
+            item.priority === null || item.priority === undefined
+              ? item.computed_priority
+              : item.priority;
+          if (minPriority !== null && priority < minPriority) {
+            return false;
+          }
+          if (maxEffort !== null && item.effort !== null && item.effort !== undefined) {
+            if (item.effort > maxEffort) {
+              return false;
+            }
+          }
+          return true;
+        });
+      };
+
       const renderAssessmentSelect = () => {
         const select = el("assessmentSelect");
         select.innerHTML = "";
@@ -982,7 +1277,7 @@
           container.innerHTML = `<div class='empty'>${t("no_domains")}</div>`;
           return;
         }
-        const rows = flattenPractices(state.domains);
+        const rows = getFilteredPracticeRows();
         if (rows.length === 0) {
           container.innerHTML = `<div class='empty'>${t("no_practices")}</div>`;
           return;
@@ -1057,7 +1352,8 @@
           container.innerHTML = `<div class='empty'>${t("select_assessment_first")}</div>`;
           return;
         }
-        if (state.backlog.length === 0) {
+        const backlogRows = getFilteredBacklog();
+        if (backlogRows.length === 0) {
           container.innerHTML = `<div class='empty'>${t("no_backlog")}</div>`;
           return;
         }
@@ -1067,7 +1363,7 @@
             "impact_effort"
           )}</th><th>${t("target_date")}</th><th></th>` +
           "</tr></thead><tbody>";
-        state.backlog.forEach((item) => {
+        backlogRows.forEach((item) => {
           const impact = item.impact === null || item.impact === undefined ? "--" : item.impact;
           const effort = item.effort === null || item.effort === undefined ? "--" : item.effort;
           const priority =
@@ -1205,6 +1501,141 @@
         container.innerHTML = html;
       };
 
+      const renderBarChart = (containerId, series, options = {}) => {
+        const container = el(containerId);
+        if (!container) {
+          return;
+        }
+        if (!series.length) {
+          container.innerHTML = `<div class='empty'>${t("chart_empty")}</div>`;
+          return;
+        }
+        const width = options.width || 520;
+        const height = options.height || 240;
+        const padding = 28;
+        const maxValue = Math.max(...series.map((item) => item.value), 1);
+        const barGap = 8;
+        const barWidth = Math.max(
+          8,
+          (width - padding * 2 - barGap * (series.length - 1)) / series.length
+        );
+        const baseY = height - padding;
+        const color = options.color || "#2f6b6a";
+
+        let svg = `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${options.label || ""}">`;
+        svg += `<line x1="${padding}" y1="${baseY}" x2="${width - padding}" y2="${baseY}" stroke="#d6d1c6" />`;
+        series.forEach((item, index) => {
+          const barHeight = (item.value / maxValue) * (height - padding * 2);
+          const x = padding + index * (barWidth + barGap);
+          const y = baseY - barHeight;
+          const label = item.label.length > 12 ? `${item.label.slice(0, 12)}…` : item.label;
+          svg += `<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="${color}">`;
+          svg += `<title>${item.label}: ${item.value}</title></rect>`;
+          svg += `<text x="${x + barWidth / 2}" y="${baseY + 14}" text-anchor="middle" font-size="10" fill="#6a5b48">${label}</text>`;
+        });
+        svg += "</svg>";
+        container.innerHTML = svg;
+      };
+
+      const priorityColor = (value) => {
+        const clamped = Math.max(0, Math.min(10, value));
+        const ratio = clamped / 10;
+        const r = Math.round(201 + (47 - 201) * (1 - ratio));
+        const g = Math.round(79 + (107 - 79) * (1 - ratio));
+        const b = Math.round(61 + (106 - 61) * (1 - ratio));
+        return `rgb(${r}, ${g}, ${b})`;
+      };
+
+      const renderBacklogScatter = () => {
+        const container = el("backlogScatter");
+        if (!container) {
+          return;
+        }
+        if (!state.currentAssessmentId) {
+          container.innerHTML = `<div class='empty'>${t("select_assessment_first")}</div>`;
+          return;
+        }
+        const points = getFilteredBacklog().filter(
+          (item) =>
+            item.impact !== null &&
+            item.impact !== undefined &&
+            item.effort !== null &&
+            item.effort !== undefined
+        );
+        if (!points.length) {
+          container.innerHTML = `<div class='empty'>${t("chart_empty")}</div>`;
+          return;
+        }
+        const width = 520;
+        const height = 240;
+        const padding = 32;
+        const maxX = 5;
+        const maxY = 5;
+        const scaleX = (value) => padding + (value / maxX) * (width - padding * 2);
+        const scaleY = (value) => height - padding - (value / maxY) * (height - padding * 2);
+        let svg = `<svg viewBox="0 0 ${width} ${height}" role="img">`;
+        svg += `<line x1="${padding}" y1="${height - padding}" x2="${width - padding}" y2="${height - padding}" stroke="#d6d1c6" />`;
+        svg += `<line x1="${padding}" y1="${height - padding}" x2="${padding}" y2="${padding}" stroke="#d6d1c6" />`;
+        points.forEach((item) => {
+          const priority =
+            item.priority === null || item.priority === undefined
+              ? item.computed_priority
+              : item.priority;
+          const x = scaleX(item.effort);
+          const y = scaleY(item.impact);
+          const color = priorityColor(priority || 0);
+          svg += `<circle cx="${x}" cy="${y}" r="5" fill="${color}">`;
+          svg += `<title>${item.practice_code} (${item.domain_code}) - impact ${item.impact}, effort ${item.effort}, priority ${priority}</title></circle>`;
+        });
+        svg += `<text x="${width - padding}" y="${height - 8}" text-anchor="end" font-size="10" fill="#6a5b48">Effort</text>`;
+        svg += `<text x="${padding}" y="${padding - 8}" text-anchor="start" font-size="10" fill="#6a5b48">Impact</text>`;
+        svg += "</svg>";
+        container.innerHTML = svg;
+      };
+
+      const renderDomainChart = () => {
+        if (!state.currentAssessmentId) {
+          const container = el("domainChart");
+          if (container) {
+            container.innerHTML = `<div class='empty'>${t("select_assessment_first")}</div>`;
+          }
+          return;
+        }
+        const series = state.dashboard.map((row) => ({
+          label: row.domain_code,
+          value: row.average_score === null || row.average_score === undefined ? 0 : row.average_score,
+        }));
+        renderBarChart("domainChart", series, { label: t("domain_chart_title"), color: "#2f6b6a" });
+      };
+
+      const renderTrendChart = () => {
+        const series = state.trends.map((row) => ({
+          label: row.assessment_name,
+          value: row.average_score === null || row.average_score === undefined ? 0 : row.average_score,
+        }));
+        renderBarChart("trendChart", series, { label: t("trend_chart_title"), color: "#c94f3d" });
+      };
+
+      const renderActivityChart = () => {
+        const series = state.evolution
+          .slice()
+          .reverse()
+          .slice(-14)
+          .map((row) => ({
+            label: row.date,
+            value: row.total,
+          }));
+        renderBarChart("activityChart", series, { label: t("activity_chart_title"), color: "#8c5a15" });
+      };
+
+      const renderAssetCoverageChart = () => {
+        const series = state.assetCoverage.map((row) => ({
+          label: row.asset_name,
+          value: row.linked_practices,
+        }));
+        renderBarChart("assetCoverageChart", series, { label: t("asset_coverage_title"), color: "#2f6b6a" });
+      };
+
       const renderAssets = () => {
         const list = el("assetList");
         const select = el("assetSelect");
@@ -1296,26 +1727,31 @@
         state.domains = await api.get(`/api/domains${query}`);
         renderDomains();
         renderPracticeSelect();
+        renderFilters();
       };
 
       const loadDashboard = async () => {
         if (!state.currentAssessmentId) {
           state.dashboard = [];
           renderDashboard();
+          renderDomainChart();
           return;
         }
         state.dashboard = await api.get(`/api/dashboard?assessment_id=${state.currentAssessmentId}`);
         renderDashboard();
+        renderDomainChart();
       };
 
       const loadBacklog = async () => {
         if (!state.currentAssessmentId) {
           state.backlog = [];
           renderBacklog();
+          renderBacklogScatter();
           return;
         }
         state.backlog = await api.get(`/api/backlog?assessment_id=${state.currentAssessmentId}`);
         renderBacklog();
+        renderBacklogScatter();
       };
 
       const loadAssets = async () => {
@@ -1326,11 +1762,18 @@
       const loadTrends = async () => {
         state.trends = await api.get("/api/assessment-trends");
         renderTrends();
+        renderTrendChart();
       };
 
       const loadEvolution = async () => {
         state.evolution = await api.get("/api/evolution?days=30");
         renderEvolution();
+        renderActivityChart();
+      };
+
+      const loadAssetCoverage = async () => {
+        state.assetCoverage = await api.get("/api/asset-coverage");
+        renderAssetCoverageChart();
       };
 
       const loadRecentChanges = async () => {
@@ -1351,24 +1794,81 @@
         await loadBacklog();
         await loadAssets();
         await refreshHistory();
+        await loadAssetCoverage();
       };
 
       const updateAssessmentLabel = () => {
         if (!state.currentAssessmentId) {
           el("assessmentLabel").textContent = t("assessment_none_selected");
+          if (el("dashboardAssessmentLabel")) {
+            el("dashboardAssessmentLabel").textContent = t("assessment_none_selected");
+          }
           return;
         }
         const current = state.assessments.find((a) => a.id === state.currentAssessmentId);
         if (!current) {
           el("assessmentLabel").textContent = t("assessment_not_found");
+          if (el("dashboardAssessmentLabel")) {
+            el("dashboardAssessmentLabel").textContent = t("assessment_not_found");
+          }
           return;
         }
-        el("assessmentLabel").textContent = `${current.name} (${current.assessment_date})`;
+        const label = `${current.name} (${current.assessment_date})`;
+        el("assessmentLabel").textContent = label;
+        if (el("dashboardAssessmentLabel")) {
+          el("dashboardAssessmentLabel").textContent = label;
+        }
       };
 
       const bindEvents = () => {
         el("langSelect").addEventListener("change", (event) => {
           setLanguage(event.target.value);
+        });
+
+        el("navDashboard").addEventListener("click", () => setView("dashboard"));
+        el("navWorkspace").addEventListener("click", () => setView("workspace"));
+        el("gotoWorkspaceBtn").addEventListener("click", () => setView("workspace"));
+
+        el("filterDomain").addEventListener("change", (event) => {
+          state.filters.domain = event.target.value;
+          renderDomains();
+          renderBacklog();
+          renderBacklogScatter();
+        });
+        el("filterScore").addEventListener("change", (event) => {
+          state.filters.score = event.target.value;
+          renderDomains();
+        });
+        el("filterSearch").addEventListener("input", (event) => {
+          state.filters.search = event.target.value;
+          renderDomains();
+        });
+        el("filterMinPriority").addEventListener("input", (event) => {
+          state.filters.minPriority = event.target.value;
+          renderBacklog();
+          renderBacklogScatter();
+        });
+        el("filterMaxEffort").addEventListener("input", (event) => {
+          state.filters.maxEffort = event.target.value;
+          renderBacklog();
+          renderBacklogScatter();
+        });
+        el("filtersResetBtn").addEventListener("click", () => {
+          state.filters = {
+            domain: "all",
+            score: "all",
+            search: "",
+            minPriority: "",
+            maxEffort: "",
+          };
+          el("filterDomain").value = "all";
+          el("filterScore").value = "all";
+          el("filterSearch").value = "";
+          el("filterMinPriority").value = "";
+          el("filterMaxEffort").value = "";
+          renderDomains();
+          renderBacklog();
+          renderBacklogScatter();
         });
 
         el("quitBtn").addEventListener("click", async () => {
@@ -1443,6 +1943,7 @@
             el("assetCriticality").value = "";
             el("assetTags").value = "";
             await loadAssets();
+            await loadAssetCoverage();
             await refreshHistory();
           } catch (err) {
             el("assetList").innerHTML = `<div class='empty'>${t("error_prefix")} ${err.message}</div>`;
@@ -1464,6 +1965,7 @@
             el("assetLinkMsg").textContent = result.created
               ? t("link_created")
               : t("link_exists");
+            await loadAssetCoverage();
             await refreshHistory();
           } catch (err) {
             el("assetLinkMsg").textContent = `${t("error_prefix")} ${err.message}`;
@@ -1517,6 +2019,7 @@
           serverLang = null;
         }
         setLanguage(detectLanguage(serverLang));
+        setView("dashboard");
         try {
           await api.get("/api/healthz");
           setStatus("ok");

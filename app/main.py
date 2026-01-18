@@ -186,6 +186,14 @@ def create_app() -> FastAPI:
         finally:
             conn.close()
 
+    @app.get("/api/asset-coverage")
+    def get_asset_coverage():
+        conn = connect()
+        try:
+            return services.get_asset_coverage(conn)
+        finally:
+            conn.close()
+
     @app.post("/api/assets")
     def post_assets(payload: AssetCreate):
         name = payload.name.strip()
