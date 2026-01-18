@@ -1,0 +1,12 @@
+# Author: eric vanoverbeke
+# Date: 2026-01-18
+
+services:
+  cti-cmm-demo:
+    build: .
+    ports:
+      - "9999:9999"
+    volumes:
+      - ./data-test:/app/data
+    environment:
+      APP_DEFAULT_LANG: en

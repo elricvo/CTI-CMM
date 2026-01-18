@@ -75,6 +75,19 @@ Ou via docker-compose:
 docker compose up --build
 ```
 
+### Mode C (Demo data-test)
+
+```bash
+docker build -t cti-cmm .
+docker run --rm -p 9999:9999 -v "$(pwd)/data-test:/app/data" cti-cmm
+```
+
+Ou via docker-compose demo:
+
+```bash
+docker compose -f docker-compose.demo.yml up --build
+```
+
 ## Donnees de test
 
 Pour lancer avec un jeu de donnees riche:
