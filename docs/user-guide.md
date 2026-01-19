@@ -1,8 +1,5 @@
 # CTI-CMM Mini - User Guide
 
-Author: eric vanoverbeke
-Date: 2026-01-18
-
 ## Overview
 
 CTI-CMM Mini is a lightweight web app for CTI/Risk maturity assessments.

@@ -1,8 +1,5 @@
 # CTI-CMM Mini App
 
-Auteur : eric vanoverbeke
-Date : 2026-01-18
-
 Mini web-app Python + SQLite pour evaluer la maturite CTI/Risk.
 
 ## Excel n'est pas une base de donnees
